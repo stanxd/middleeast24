@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -51,6 +52,13 @@
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Custom colors matching the image */
+    --hero-bg-start: 220 45% 15%;
+    --hero-bg-end: 220 60% 8%;
+    --services-bg-start: 220 40% 20%;
+    --services-bg-middle: 45 85% 55%;
+    --services-bg-end: 220 50% 12%;
   }
 
   .dark {
@@ -99,5 +107,16 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Custom gradient classes */
+@layer utilities {
+  .hero-gradient {
+    background: linear-gradient(135deg, hsl(var(--hero-bg-start)) 0%, hsl(var(--hero-bg-end)) 100%);
+  }
+  
+  .services-gradient {
+    background: linear-gradient(135deg, hsl(var(--services-bg-start)) 0%, hsl(var(--services-bg-middle)) 50%, hsl(var(--services-bg-end)) 100%);
   }
 }

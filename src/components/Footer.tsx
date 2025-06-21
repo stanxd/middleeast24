@@ -1,10 +1,11 @@
 
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-navy-900 text-white">
+    <footer className="hero-gradient text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-4 gap-8">
           {/* Logo and Description */}
@@ -67,3 +68,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

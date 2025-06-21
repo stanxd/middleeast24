@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useRSSFeed } from '../hooks/useRSSFeed';
 import { sampleArticles } from '../data/sampleData';
@@ -16,7 +17,7 @@ const Hero = () => {
 
   return (
     <>
-      <section className="bg-navy-900 text-white">
+      <section className="hero-gradient text-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
             <div className="space-y-4 sm:space-y-6 order-2 lg:order-1">
@@ -46,7 +47,7 @@ const Hero = () => {
               
               <button 
                 onClick={handleReadFullStory}
-                className="bg-white text-navy-900 px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-sm sm:text-base w-fit cursor-pointer"
+                className="bg-white text-gray-900 px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-sm sm:text-base w-fit cursor-pointer"
               >
                 Read Full Story
               </button>

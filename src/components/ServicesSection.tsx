@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { Heart, FileText, GraduationCap, ArrowRight, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -57,16 +58,16 @@ const ServicesSection = () => {
   ];
 
   return (
-    <section className="py-16 lg:py-24 bg-gradient-to-b from-gray-50 via-white to-gray-50">
+    <section className="py-16 lg:py-24 services-gradient">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 lg:mb-20">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-6">
             <span className="text-2xl">🚀</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Services</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
+            Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-200">Services</span>
           </h2>
-          <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
             Empowering truth through technology, community, and education. Join us in shaping the future of independent journalism.
           </p>
         </div>
@@ -79,7 +80,7 @@ const ServicesSection = () => {
             return (
               <div 
                 key={service.id} 
-                className={`group relative bg-white rounded-3xl p-8 text-center hover:shadow-2xl ${service.shadowColor} transition-all duration-500 transform hover:-translate-y-3 border-2 ${service.borderColor} hover:border-opacity-50 overflow-hidden`}
+                className={`group relative bg-white/95 backdrop-blur-sm rounded-3xl p-8 text-center hover:shadow-2xl ${service.shadowColor} transition-all duration-500 transform hover:-translate-y-3 border-2 ${service.borderColor} hover:border-opacity-50 overflow-hidden`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-gray-50 to-transparent rounded-full transform translate-x-16 -translate-y-16 group-hover:scale-150 transition-transform duration-700"></div>
@@ -124,7 +125,7 @@ const ServicesSection = () => {
         </div>
 
         <div className="text-center mt-16 lg:mt-24">
-          <div className="relative bg-gradient-to-r from-gray-900 via-blue-900 to-gray-900 rounded-3xl p-8 sm:p-12 lg:p-16 text-white overflow-hidden">
+          <div className="relative bg-gradient-to-r from-gray-900/80 via-blue-900/80 to-gray-900/80 backdrop-blur-sm rounded-3xl p-8 sm:p-12 lg:p-16 text-white overflow-hidden border border-white/20">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
             <div className="absolute top-0 left-0 w-full h-full opacity-20" style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
@@ -142,7 +143,7 @@ const ServicesSection = () => {
               </p>
               <button 
                 onClick={() => navigate('/contact')}
-                className="bg-white text-gray-900 px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-bold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 inline-flex items-center space-x-3 text-base sm:text-lg shadow-2xl"
+                className="bg-white/90 backdrop-blur-sm text-gray-900 px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-bold hover:bg-white transition-all duration-300 transform hover:scale-105 inline-flex items-center space-x-3 text-base sm:text-lg shadow-2xl"
               >
                 <span>Contact Us Today</span>
                 <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6" />
@@ -167,3 +168,4 @@ const ServicesSection = () => {
 };
 
 export default ServicesSection;
+

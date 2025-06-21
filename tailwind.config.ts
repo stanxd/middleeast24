@@ -1,4 +1,5 @@
 
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -31,6 +32,10 @@ export default {
 					'700': '#1f24d4',
 					'800': '#1c20aa',
 					'900': '#1e2187',
+				},
+				'hero-dark': {
+					'start': 'hsl(var(--hero-bg-start))',
+					'end': 'hsl(var(--hero-bg-end))',
 				},
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -107,3 +112,4 @@ export default {
 	},
 	plugins: [require("tailwindcss-animate")],
 } satisfies Config;
+
