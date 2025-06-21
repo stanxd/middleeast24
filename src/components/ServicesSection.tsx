@@ -1,10 +1,12 @@
 
 import React, { useState } from 'react';
 import { Heart, FileText, GraduationCap, ArrowRight, Clock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import DonationModal from './DonationModal';
 import InvestigativeReportModal from './InvestigativeReportModal';
 
 const ServicesSection = () => {
+  const navigate = useNavigate();
   const [donationModalOpen, setDonationModalOpen] = useState(false);
   const [reportModalOpen, setReportModalOpen] = useState(false);
 
@@ -138,7 +140,10 @@ const ServicesSection = () => {
               <p className="text-blue-100 mb-8 sm:mb-10 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
                 Join our community of truth-seekers, whistleblowers, and changemakers. Together, we're shaping the future of independent journalism.
               </p>
-              <button className="bg-white text-gray-900 px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-bold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 inline-flex items-center space-x-3 text-base sm:text-lg shadow-2xl">
+              <button 
+                onClick={() => navigate('/contact')}
+                className="bg-white text-gray-900 px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-bold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 inline-flex items-center space-x-3 text-base sm:text-lg shadow-2xl"
+              >
                 <span>Contact Us Today</span>
                 <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6" />
               </button>

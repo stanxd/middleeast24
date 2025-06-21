@@ -25,9 +25,8 @@ const Footer = () => {
             <h4 className="font-semibold">Quick Links</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
-              <li><a href="#" className="hover:text-white transition-colors">News</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Investigations</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Exclusive Sources</a></li>
+              <li><Link to="/about" className="hover:text-white transition-colors">About</Link></li>
+              <li><Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
             </ul>
           </div>
 
@@ -35,10 +34,9 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-semibold">Categories</h4>
             <ul className="space-y-2 text-sm text-gray-400">
-              <li><a href="#" className="hover:text-white transition-colors">Politics</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Economy</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Security</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Culture</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">News</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Investigations</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Exclusive Sources</a></li>
             </ul>
           </div>
 
