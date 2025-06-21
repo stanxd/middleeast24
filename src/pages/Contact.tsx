@@ -10,6 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -35,20 +36,32 @@ const Contact = () => {
 
   const onSubmit = async (data: ContactFormData) => {
     try {
-      // Here you would typically send the data to your backend
-      console.log('Contact form submission:', data);
+      console.log('Submitting contact form:', data);
       
+      const { data: result, error } = await supabase.functions.invoke('contact-form', {
+        body: data,
+      });
+
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw new Error(error.message || 'Failed to submit contact form');
+      }
+
+      if (!result?.success) {
+        throw new Error(result?.error || 'Failed to submit contact form');
+      }
+
       toast({
         title: "Message Sent Successfully!",
-        description: "Thank you for contacting us. We'll get back to you soon at s707tan@gmail.com",
+        description: "Thank you for contacting us. We'll get back to you soon and you should receive a confirmation email.",
       });
       
       form.reset();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting contact form:', error);
       toast({
         title: "Error",
-        description: "There was an error sending your message. Please try again.",
+        description: error.message || "There was an error sending your message. Please try again.",
         variant: "destructive",
       });
     }
