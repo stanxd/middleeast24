@@ -1,19 +1,72 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ArticleCard from './ArticleCard';
+import SentimentFilter from './SentimentFilter';
 import { useRSSFeed } from '../hooks/useRSSFeed';
+import { useSentimentAnalysis } from '../hooks/useSentimentAnalysis';
 import { sampleArticles } from '../data/sampleData';
+import { Article } from '../types/Article';
 
 const CategoryTabs = () => {
   const { articles: rssArticles, loading: rssLoading, error: rssError } = useRSSFeed('https://english.alarabiya.net/feed/rss2/en/News.xml');
+  const { analyzeSentiment, isModelReady } = useSentimentAnalysis();
+  const [sentimentFilter, setSentimentFilter] = useState('all');
+  const [processedArticles, setProcessedArticles] = useState<Article[]>([]);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  // For News tab, use RSS articles (limited to 15)
-  const newsArticles = rssArticles.slice(0, 15);
+  // Process articles with sentiment analysis
+  useEffect(() => {
+    const processArticlesWithSentiment = async () => {
+      if (!isModelReady || rssArticles.length === 0) {
+        setProcessedArticles(rssArticles);
+        return;
+      }
+
+      setIsAnalyzing(true);
+      console.log('Starting sentiment analysis for articles...');
+
+      const articlesWithSentiment = await Promise.all(
+        rssArticles.map(async (article) => {
+          try {
+            const sentimentResult = await analyzeSentiment(article.title + ' ' + article.excerpt);
+            if (sentimentResult) {
+              return {
+                ...article,
+                sentiment: sentimentResult.label,
+                sentimentConfidence: sentimentResult.confidence
+              };
+            }
+            return article;
+          } catch (error) {
+            console.error('Error analyzing sentiment for article:', article.id, error);
+            return article;
+          }
+        })
+      );
+
+      setProcessedArticles(articlesWithSentiment);
+      setIsAnalyzing(false);
+      console.log('Sentiment analysis completed');
+    };
+
+    processArticlesWithSentiment();
+  }, [rssArticles, isModelReady, analyzeSentiment]);
+
+  // Filter articles by sentiment
+  const getFilteredArticles = (articles: Article[]) => {
+    if (sentimentFilter === 'all') {
+      return articles;
+    }
+    return articles.filter(article => article.sentiment === sentimentFilter);
+  };
+
+  // For News tab, use processed RSS articles (limited to 15)
+  const newsArticles = getFilteredArticles(processedArticles.slice(0, 15));
   
   // For other tabs, use filtered sample articles
-  const investigationsArticles = sampleArticles.filter(article => article.category === 'Investigations');
-  const exclusiveArticles = sampleArticles.filter(article => article.category === 'Exclusive Sources');
+  const investigationsArticles = getFilteredArticles(sampleArticles.filter(article => article.category === 'Investigations'));
+  const exclusiveArticles = getFilteredArticles(sampleArticles.filter(article => article.category === 'Exclusive Sources'));
 
   const renderArticles = (articles, category) => {
     if (rssLoading && category === 'news') {
@@ -52,13 +105,18 @@ const CategoryTabs = () => {
     }
 
     if (articles.length === 0) {
+      const isFiltered = sentimentFilter !== 'all';
       return (
         <div className="text-center py-12 sm:py-16">
           <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
             <span className="text-gray-400 text-2xl">📰</span>
           </div>
-          <p className="text-gray-500 font-medium">No articles available at the moment.</p>
-          <p className="text-gray-400 text-sm mt-1">Check back later for updates.</p>
+          <p className="text-gray-500 font-medium">
+            {isFiltered ? `No ${sentimentFilter} articles found.` : 'No articles available at the moment.'}
+          </p>
+          <p className="text-gray-400 text-sm mt-1">
+            {isFiltered ? 'Try selecting a different sentiment filter.' : 'Check back later for updates.'}
+          </p>
         </div>
       );
     }
@@ -103,6 +161,26 @@ const CategoryTabs = () => {
               <span className="sm:hidden">⭐</span>
             </TabsTrigger>
           </TabsList>
+        </div>
+
+        {/* Sentiment Filter */}
+        <div className="mb-6 flex justify-between items-center">
+          <div className="flex items-center space-x-4">
+            {isAnalyzing && (
+              <div className="text-sm text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                🤖 Analyzing sentiment...
+              </div>
+            )}
+            {!isModelReady && (
+              <div className="text-sm text-orange-600 bg-orange-50 px-3 py-1 rounded-full">
+                🔄 Loading AI model...
+              </div>
+            )}
+          </div>
+          <SentimentFilter 
+            selectedSentiment={sentimentFilter}
+            onSentimentChange={setSentimentFilter}
+          />
         </div>
         
         <TabsContent value="news" className="mt-0">

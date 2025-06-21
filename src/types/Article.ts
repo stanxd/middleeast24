@@ -10,4 +10,6 @@ export interface Article {
   image: string;
   featured: boolean;
   tags: string[];
+  sentiment?: 'positive' | 'negative' | 'neutral';
+  sentimentConfidence?: number;
 }

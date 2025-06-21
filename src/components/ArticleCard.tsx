@@ -4,6 +4,7 @@ import { Clock, User, Share, DollarSign } from 'lucide-react';
 import { Article } from '../types/Article';
 import DonationModal from './DonationModal';
 import ArticleModal from './ArticleModal';
+import SentimentBadge from './SentimentBadge';
 
 interface ArticleCardProps {
   article: Article;
@@ -36,10 +37,16 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, showSponsorButton = 
             alt={article.title}
             className="w-full h-48 object-cover"
           />
-          <div className="absolute top-3 left-3">
+          <div className="absolute top-3 left-3 flex items-center space-x-2">
             <span className={`${getCategoryColor(article.category)} text-white px-2 py-1 rounded text-xs font-medium`}>
               {article.category}
             </span>
+            {article.sentiment && (
+              <SentimentBadge 
+                sentiment={article.sentiment} 
+                confidence={article.sentimentConfidence}
+              />
+            )}
           </div>
           <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 p-1 rounded">
             <img 
