@@ -9,7 +9,93 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      investigative_reports: {
+        Row: {
+          contact_email: string
+          contact_name: string
+          contact_phone: string | null
+          created_at: string
+          description: string
+          documents_description: string | null
+          id: string
+          status: string
+          title: string
+          urgency_level: string
+        }
+        Insert: {
+          contact_email: string
+          contact_name: string
+          contact_phone?: string | null
+          created_at?: string
+          description: string
+          documents_description?: string | null
+          id?: string
+          status?: string
+          title: string
+          urgency_level?: string
+        }
+        Update: {
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string | null
+          created_at?: string
+          description?: string
+          documents_description?: string | null
+          id?: string
+          status?: string
+          title?: string
+          urgency_level?: string
+        }
+        Relationships: []
+      }
+      mentorship_applications: {
+        Row: {
+          age: number | null
+          areas_of_interest: string
+          availability: string
+          created_at: string
+          education_background: string
+          email: string
+          full_name: string
+          id: string
+          journalism_experience: string | null
+          motivation: string
+          phone: string | null
+          portfolio_links: string | null
+          status: string
+        }
+        Insert: {
+          age?: number | null
+          areas_of_interest: string
+          availability: string
+          created_at?: string
+          education_background: string
+          email: string
+          full_name: string
+          id?: string
+          journalism_experience?: string | null
+          motivation: string
+          phone?: string | null
+          portfolio_links?: string | null
+          status?: string
+        }
+        Update: {
+          age?: number | null
+          areas_of_interest?: string
+          availability?: string
+          created_at?: string
+          education_background?: string
+          email?: string
+          full_name?: string
+          id?: string
+          journalism_experience?: string | null
+          motivation?: string
+          phone?: string | null
+          portfolio_links?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
