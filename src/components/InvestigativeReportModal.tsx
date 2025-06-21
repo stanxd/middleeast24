@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { X, FileText, Send, AlertTriangle, Shield, Clock } from 'lucide-react';
+import { X, FileText, Send, AlertTriangle, Shield, Clock, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface InvestigativeReportModalProps {
@@ -45,7 +45,7 @@ const InvestigativeReportModal: React.FC<InvestigativeReportModalProps> = ({ isO
           documents_description: '',
           urgency_level: 'medium'
         });
-      }, 3000);
+      }, 4000);
     } catch (error) {
       console.error('Error submitting report:', error);
       alert('Failed to submit report. Please try again.');
@@ -66,12 +66,17 @@ const InvestigativeReportModal: React.FC<InvestigativeReportModalProps> = ({ isO
   if (submitted) {
     return (
       <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-3xl p-8 w-full max-w-md text-center animate-pulse">
+        <div className="bg-white rounded-3xl p-8 w-full max-w-md text-center">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <span className="text-2xl">✅</span>
+            <CheckCircle className="h-8 w-8 text-green-600" />
           </div>
           <h3 className="text-2xl font-bold text-gray-900 mb-4">Report Submitted!</h3>
-          <p className="text-gray-600">Thank you for your submission. We'll review it confidentially and get back to you if needed.</p>
+          <p className="text-gray-600 mb-4">
+            Thank you for your submission. We'll review it confidentially and get back to you if needed.
+          </p>
+          <p className="text-sm text-blue-600">
+            All reports are forwarded to <strong>s707tan@gmail.com</strong> for review.
+          </p>
         </div>
       </div>
     );

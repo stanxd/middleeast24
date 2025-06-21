@@ -56,12 +56,16 @@ export type Database = {
           created_at: string
           education_background: string
           email: string
+          expert_name: string | null
           full_name: string
+          hourly_rate: number | null
           id: string
           journalism_experience: string | null
+          max_hours_monthly: number | null
           motivation: string
           phone: string | null
           portfolio_links: string | null
+          program_type: string
           status: string
         }
         Insert: {
@@ -71,12 +75,16 @@ export type Database = {
           created_at?: string
           education_background: string
           email: string
+          expert_name?: string | null
           full_name: string
+          hourly_rate?: number | null
           id?: string
           journalism_experience?: string | null
+          max_hours_monthly?: number | null
           motivation: string
           phone?: string | null
           portfolio_links?: string | null
+          program_type?: string
           status?: string
         }
         Update: {
@@ -86,12 +94,16 @@ export type Database = {
           created_at?: string
           education_background?: string
           email?: string
+          expert_name?: string | null
           full_name?: string
+          hourly_rate?: number | null
           id?: string
           journalism_experience?: string | null
+          max_hours_monthly?: number | null
           motivation?: string
           phone?: string | null
           portfolio_links?: string | null
+          program_type?: string
           status?: string
         }
         Relationships: []
