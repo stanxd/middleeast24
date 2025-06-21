@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useRSSFeed } from '../hooks/useRSSFeed';
 import { sampleArticles } from '../data/sampleData';
@@ -8,6 +7,21 @@ const Hero = () => {
   
   // Use the first RSS article if available, otherwise fallback to sample
   const featuredArticle = (!rssLoading && rssArticles.length > 0) ? rssArticles[0] : sampleArticles[0];
+
+  const handleReadFullStory = () => {
+    // For RSS articles, open the original link in a new tab
+    if (!rssLoading && rssArticles.length > 0 && rssArticles[0].content.includes('http')) {
+      // Extract URL from RSS content if available
+      const urlMatch = rssArticles[0].content.match(/https?:\/\/[^\s]+/);
+      if (urlMatch) {
+        window.open(urlMatch[0], '_blank');
+        return;
+      }
+    }
+    
+    // Fallback: show article content in an alert or modal
+    alert(`${featuredArticle.title}\n\n${featuredArticle.content.replace(/<[^>]*>/g, '')}`);
+  };
 
   return (
     <section className="bg-navy-900 text-white">
@@ -21,7 +35,10 @@ const Hero = () => {
               <span className="text-gray-300 text-xs sm:text-sm">{featuredArticle.category}</span>
             </div>
             
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight">
+            <h1 
+              className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight cursor-pointer hover:text-gray-200 transition-colors"
+              onClick={handleReadFullStory}
+            >
               {featuredArticle.title}
             </h1>
             
@@ -35,7 +52,10 @@ const Hero = () => {
               <span>{featuredArticle.publishDate}</span>
             </div>
             
-            <button className="bg-white text-navy-900 px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-sm sm:text-base w-fit">
+            <button 
+              onClick={handleReadFullStory}
+              className="bg-white text-navy-900 px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-sm sm:text-base w-fit cursor-pointer"
+            >
               Read Full Story
             </button>
           </div>

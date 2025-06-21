@@ -21,10 +21,24 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, showSponsorButton = 
     }
   };
 
+  const handleArticleClick = () => {
+    // For RSS articles with external links, try to open them
+    if (article.content.includes('http')) {
+      const urlMatch = article.content.match(/https?:\/\/[^\s]+/);
+      if (urlMatch) {
+        window.open(urlMatch[0], '_blank');
+        return;
+      }
+    }
+    
+    // Fallback: show article content
+    alert(`${article.title}\n\n${article.content.replace(/<[^>]*>/g, '')}`);
+  };
+
   return (
     <>
-      <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-        <div className="relative">
+      <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+        <div className="relative" onClick={handleArticleClick}>
           <img 
             src={article.image} 
             alt={article.title}
@@ -45,7 +59,10 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, showSponsorButton = 
         </div>
         
         <div className="p-4 space-y-3">
-          <h3 className="text-lg font-semibold text-gray-900 hover:text-navy-900 cursor-pointer transition-colors line-clamp-2">
+          <h3 
+            className="text-lg font-semibold text-gray-900 hover:text-navy-900 cursor-pointer transition-colors line-clamp-2"
+            onClick={handleArticleClick}
+          >
             {article.title}
           </h3>
           
