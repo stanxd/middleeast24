@@ -1,13 +1,14 @@
 
 import React from 'react';
-import { Clock, User, Share } from 'lucide-react';
+import { Clock, User, Share, DollarSign } from 'lucide-react';
 import { Article } from '../types/Article';
 
 interface ArticleCardProps {
   article: Article;
+  showSponsorButton?: boolean;
 }
 
-const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
+const ArticleCard: React.FC<ArticleCardProps> = ({ article, showSponsorButton = false }) => {
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'News': return 'bg-blue-600';
@@ -47,6 +48,13 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
         <p className="text-gray-600 text-sm line-clamp-3">
           {article.excerpt}
         </p>
+        
+        {showSponsorButton && (
+          <button className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 rounded-lg font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 flex items-center justify-center space-x-2 text-sm">
+            <DollarSign className="h-4 w-4" />
+            <span>Sponsor this Investigation</span>
+          </button>
+        )}
         
         <div className="flex items-center justify-between pt-2 border-t">
           <div className="flex items-center space-x-3 text-xs text-gray-500">
