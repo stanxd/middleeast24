@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Heart, FileText, GraduationCap, ArrowRight, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -13,8 +14,8 @@ const ServicesSection = () => {
     description: 'Your donation helps us maintain editorial independence and continue our mission to deliver unbiased news and investigations that matter.',
     icon: Heart,
     buttonText: 'Donate Now',
-    color: 'bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700',
-    shadowColor: 'shadow-red-200 hover:shadow-red-300',
+    color: 'bg-gradient-to-br from-slate-700 via-blue-800 to-slate-900 hover:from-slate-800 hover:via-blue-900 hover:to-slate-950',
+    shadowColor: 'shadow-slate-200 hover:shadow-slate-300',
     iconBg: 'bg-red-50',
     iconColor: 'text-red-600',
     borderColor: 'border-red-100',
@@ -25,7 +26,7 @@ const ServicesSection = () => {
     description: 'Submit confidential tips, documents, or leads for investigative stories. Help us uncover the truth that needs to be told.',
     icon: FileText,
     buttonText: 'Submit Report',
-    color: 'bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700',
+    color: 'bg-gradient-to-br from-slate-700 via-blue-800 to-slate-900 hover:from-slate-800 hover:via-blue-900 hover:to-slate-950',
     shadowColor: 'shadow-blue-200 hover:shadow-blue-300',
     iconBg: 'bg-blue-50',
     iconColor: 'text-blue-600',
@@ -41,7 +42,7 @@ const ServicesSection = () => {
     description: "Join our comprehensive mentorship program to learn from experienced journalists and develop your reporting skills in today's media landscape.",
     icon: GraduationCap,
     buttonText: 'Apply Now',
-    color: 'bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700',
+    color: 'bg-gradient-to-br from-slate-700 via-blue-800 to-slate-900 hover:from-slate-800 hover:via-blue-900 hover:to-slate-950',
     shadowColor: 'shadow-green-200 hover:shadow-green-300',
     iconBg: 'bg-green-50',
     iconColor: 'text-green-600',
@@ -53,7 +54,7 @@ const ServicesSection = () => {
         <div className="text-center mb-12 lg:mb-20">
           
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            Our <span className="bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 text-gray-950">Services</span>
+            Our <span className="bg-clip-text bg-gradient-to-br from-slate-700 via-blue-800 to-slate-900 text-gray-950">Services</span>
           </h2>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Empowering truth through technology, community, and education. Join us in shaping the future of independent journalism.
