@@ -1,11 +1,9 @@
-
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { supabase } from '@/integrations/supabase/client';
-import { Tabs, Tabs
-Content, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminStats from './admin/components/AdminStats';
 import AdminContactsTab from './admin/components/AdminContactsTab';
 import AdminReportsTab from './admin/components/AdminReportsTab';
