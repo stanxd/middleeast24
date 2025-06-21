@@ -9,21 +9,6 @@ const Header = () => {
   return (
     <header className="bg-white shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4">
-        {/* Top bar */}
-        <div className="flex items-center justify-between py-2 border-b">
-          <div className="text-sm text-gray-600">
-            Breaking: Latest updates from the Middle East
-          </div>
-          <div className="text-sm text-gray-600">
-            {new Date().toLocaleDateString('en-US', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
-          </div>
-        </div>
-
         {/* Main header */}
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
