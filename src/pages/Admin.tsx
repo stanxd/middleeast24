@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Header from '../components/Header';
@@ -11,6 +10,8 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Mail, FileText, Users, Calendar, Phone, Globe } from 'lucide-react';
+
+type TableName = 'contact_submissions' | 'investigative_reports' | 'mentorship_applications';
 
 const Admin = () => {
   const { toast } = useToast();
@@ -57,7 +58,7 @@ const Admin = () => {
     }
   });
 
-  const updateStatus = async (table: string, id: string, status: string) => {
+  const updateStatus = async (table: TableName, id: string, status: string) => {
     const { error } = await supabase
       .from(table)
       .update({ status })
