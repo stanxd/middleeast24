@@ -46,7 +46,7 @@ export const useRSSFeed = (feedUrl: string) => {
             data = await response.json();
             if (data.status === 'ok' && data.items) {
               console.log('rss2json success, found', data.items.length, 'items');
-              const parsedArticles: Article[] = data.items.slice(0, 12).map((item: any, index: number) => {
+              const parsedArticles: Article[] = data.items.slice(0, 15).map((item: any, index: number) => {
                 const title = item.title || 'Untitled';
                 const description = item.description || item.content || '';
                 const link = item.link || item.guid || '';
@@ -99,7 +99,7 @@ export const useRSSFeed = (feedUrl: string) => {
               console.log('allorigins success, found', items.length, 'items');
               
               if (items.length > 0) {
-                const parsedArticles: Article[] = items.slice(0, 12).map((item, index) => {
+                const parsedArticles: Article[] = items.slice(0, 15).map((item, index) => {
                   const title = item.querySelector('title')?.textContent || 'Untitled';
                   const description = item.querySelector('description')?.textContent || '';
                   const link = item.querySelector('link')?.textContent || '';

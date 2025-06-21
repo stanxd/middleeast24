@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Header from '../components/Header';
 import Hero from '../components/Hero';
 import CategoryTabs from '../components/CategoryTabs';
+import ServicesSection from '../components/ServicesSection';
 import Footer from '../components/Footer';
 
 const Index = () => {
@@ -14,6 +15,8 @@ const Index = () => {
       <main className="container mx-auto px-4 py-8">
         <CategoryTabs />
       </main>
+      
+      <ServicesSection />
       
       <Footer />
     </div>

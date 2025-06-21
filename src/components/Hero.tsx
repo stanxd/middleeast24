@@ -1,9 +1,13 @@
 
 import React from 'react';
+import { useRSSFeed } from '../hooks/useRSSFeed';
 import { sampleArticles } from '../data/sampleData';
 
 const Hero = () => {
-  const featuredArticle = sampleArticles[0];
+  const { articles: rssArticles, loading: rssLoading } = useRSSFeed('https://english.alarabiya.net/feed/rss2/en/News.xml');
+  
+  // Use the first RSS article if available, otherwise fallback to sample
+  const featuredArticle = (!rssLoading && rssArticles.length > 0) ? rssArticles[0] : sampleArticles[0];
 
   return (
     <section className="bg-navy-900 text-white">
