@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useRSSFeed } from '../hooks/useRSSFeed';
 import { sampleArticles } from '../data/sampleData';
@@ -17,7 +16,7 @@ const Hero = () => {
 
   return (
     <>
-      <section className="hero-gradient text-white">
+      <section className="bg-gradient-to-br from-slate-700 via-blue-800 to-slate-900 text-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
             <div className="space-y-4 sm:space-y-6 order-2 lg:order-1">

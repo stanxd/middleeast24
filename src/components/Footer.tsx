@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Twitter } from 'lucide-react';
+
 const Footer = () => {
-  return <footer className="hero-gradient text-white">
+  return (
+    <footer className="bg-gradient-to-br from-slate-700 via-blue-800 to-slate-900 text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-4 gap-8">
           {/* Logo and Description */}
@@ -66,6 +68,8 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>;
+    </footer>
+  );
 };
+
 export default Footer;
