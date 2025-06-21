@@ -1,136 +1,111 @@
 
 import React, { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { Rss, RefreshCw, AlertCircle, Heart } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ArticleCard from './ArticleCard';
-import { sampleArticles } from '../data/sampleData';
 import { useRSSFeed } from '../hooks/useRSSFeed';
+import { sampleArticles } from '../data/sampleData';
 
 const CategoryTabs = () => {
   const { articles: rssArticles, loading: rssLoading, error: rssError } = useRSSFeed('https://english.alarabiya.net/feed/rss2/en/News.xml');
+
+  // For News tab, use RSS articles (limited to 15)
+  const newsArticles = rssArticles.slice(0, 15);
+  
+  // For other tabs, use filtered sample articles
   const investigationsArticles = sampleArticles.filter(article => article.category === 'Investigations');
   const exclusiveArticles = sampleArticles.filter(article => article.category === 'Exclusive Sources');
 
-  const handleRetryRSS = () => {
-    window.location.reload();
+  const renderArticles = (articles, category) => {
+    if (rssLoading && category === 'news') {
+      return (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div key={index} className="bg-white rounded-lg p-4 sm:p-6 animate-pulse">
+              <div className="bg-gray-300 h-32 sm:h-48 rounded-lg mb-4"></div>
+              <div className="bg-gray-300 h-4 rounded mb-2"></div>
+              <div className="bg-gray-300 h-4 rounded mb-2 w-3/4"></div>
+              <div className="bg-gray-300 h-3 rounded w-1/2"></div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    if (rssError && category === 'news') {
+      return (
+        <div className="text-center py-8 sm:py-12">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 sm:p-6 max-w-md mx-auto">
+            <p className="text-red-600 font-medium mb-2">Unable to load latest news</p>
+            <p className="text-red-500 text-sm">Please check your internet connection and try again.</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="mt-4 bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (articles.length === 0) {
+      return (
+        <div className="text-center py-8 sm:py-12">
+          <p className="text-gray-500">No articles available at the moment.</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        {articles.map((article, index) => (
+          <ArticleCard 
+            key={`${category}-${index}`} 
+            article={article} 
+            showSponsorButton={category === 'investigations'}
+          />
+        ))}
+      </div>
+    );
   };
 
   return (
     <div className="w-full">
       <Tabs defaultValue="news" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-8">
-          <TabsTrigger value="news" className="text-lg font-semibold">
-            <div className="flex items-center gap-2">
-              <Rss className="h-4 w-4" />
-              News
-            </div>
+        <TabsList className="grid w-full grid-cols-3 mb-6 sm:mb-8 h-auto">
+          <TabsTrigger value="news" className="text-sm sm:text-base py-2 sm:py-3">
+            News
           </TabsTrigger>
-          <TabsTrigger value="investigations" className="text-lg font-semibold">
+          <TabsTrigger value="investigations" className="text-sm sm:text-base py-2 sm:py-3">
             Investigations
           </TabsTrigger>
-          <TabsTrigger value="exclusive" className="text-lg font-semibold">
+          <TabsTrigger value="exclusive" className="text-sm sm:text-base py-2 sm:py-3">
             Exclusive Sources
           </TabsTrigger>
         </TabsList>
-
-        <TabsContent value="news" className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-3xl font-bold text-gray-900">Latest News</h2>
-            <button className="text-navy-900 font-medium hover:underline">
-              View All →
-            </button>
+        
+        <TabsContent value="news">
+          <div className="mb-4 sm:mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Latest News</h2>
+            <p className="text-sm sm:text-base text-gray-600">Stay updated with the latest developments from the Middle East</p>
           </div>
-          
-          {rssLoading && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 text-blue-600 bg-blue-50 px-4 py-3 rounded-lg">
-                <RefreshCw className="h-4 w-4 animate-spin" />
-                <span className="text-sm font-medium">Loading latest news...</span>
-              </div>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[...Array(6)].map((_, i) => (
-                  <div key={i} className="bg-white rounded-lg shadow-md p-4 animate-pulse">
-                    <div className="h-48 bg-gray-200 rounded mb-4"></div>
-                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          
-          {rssError && (
-            <div className="text-center py-12 bg-red-50 rounded-lg">
-              <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-red-900 mb-2">Unable to Load RSS Feed</h3>
-              <p className="text-red-700 mb-4">We're having trouble connecting to the news feed.</p>
-              <button 
-                onClick={handleRetryRSS}
-                className="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
-              >
-                <RefreshCw className="h-4 w-4" />
-                Retry Loading News
-              </button>
-            </div>
-          )}
-          
-          {!rssLoading && !rssError && rssArticles.length > 0 && (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {rssArticles.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
-            </div>
-          )}
-
-          {!rssLoading && !rssError && rssArticles.length === 0 && (
-            <div className="text-center py-12 bg-yellow-50 rounded-lg">
-              <AlertCircle className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-yellow-900 mb-2">No Articles Found</h3>
-              <p className="text-yellow-700 mb-4">The RSS feed was loaded but no articles were found.</p>
-              <button 
-                onClick={handleRetryRSS}
-                className="inline-flex items-center gap-2 bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors"
-              >
-                <RefreshCw className="h-4 w-4" />
-                Retry Loading News
-              </button>
-            </div>
-          )}
+          {renderArticles(newsArticles, 'news')}
         </TabsContent>
-
-        <TabsContent value="investigations" className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-3xl font-bold text-gray-900">Investigations</h2>
-            <button className="text-navy-900 font-medium hover:underline">
-              View All →
-            </button>
+        
+        <TabsContent value="investigations">
+          <div className="mb-4 sm:mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Investigative Reports</h2>
+            <p className="text-sm sm:text-base text-gray-600">In-depth analysis and investigative journalism</p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {investigationsArticles.slice(0, 6).map((article) => (
-              <div key={article.id} className="space-y-3">
-                <ArticleCard article={article} />
-                <button className="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2">
-                  <Heart className="h-4 w-4" />
-                  Sponsor this Investigation
-                </button>
-              </div>
-            ))}
-          </div>
+          {renderArticles(investigationsArticles, 'investigations')}
         </TabsContent>
-
-        <TabsContent value="exclusive" className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-3xl font-bold text-gray-900">Exclusive Sources</h2>
-            <button className="text-navy-900 font-medium hover:underline">
-              View All →
-            </button>
+        
+        <TabsContent value="exclusive">
+          <div className="mb-4 sm:mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Exclusive Sources</h2>
+            <p className="text-sm sm:text-base text-gray-600">Exclusive stories from our trusted network of sources</p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {exclusiveArticles.slice(0, 6).map((article) => (
-              <ArticleCard key={article.id} article={article} />
-            ))}
-          </div>
+          {renderArticles(exclusiveArticles, 'exclusive')}
         </TabsContent>
       </Tabs>
     </div>
