@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import ArticleCard from './ArticleCard';
-import SentimentFilter from './SentimentFilter';
+import ArticleGrid from './ArticleGrid';
+import TabHeader from './TabHeader';
 import { useRSSFeed } from '../hooks/useRSSFeed';
 import { useSentimentAnalysis } from '../hooks/useSentimentAnalysis';
 import { sampleArticles } from '../data/sampleData';
@@ -77,72 +77,6 @@ const CategoryTabs = () => {
   const investigationsArticles = getFilteredArticles(sampleArticles.filter(article => article.category === 'Investigations'));
   const exclusiveArticles = getFilteredArticles(sampleArticles.filter(article => article.category === 'Exclusive Sources'));
 
-  const renderArticles = (articles, category) => {
-    if (rssLoading && category === 'news') {
-      return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <div key={index} className="bg-white rounded-xl p-4 sm:p-6 animate-pulse shadow-sm">
-              <div className="bg-gray-300 h-32 sm:h-48 rounded-xl mb-4"></div>
-              <div className="bg-gray-300 h-4 rounded mb-2"></div>
-              <div className="bg-gray-300 h-4 rounded mb-2 w-3/4"></div>
-              <div className="bg-gray-300 h-3 rounded w-1/2"></div>
-            </div>
-          ))}
-        </div>
-      );
-    }
-
-    if (rssError && category === 'news') {
-      return (
-        <div className="text-center py-8 sm:py-12">
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4 sm:p-6 max-w-md mx-auto shadow-sm">
-            <div className="w-12 h-12 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
-              <span className="text-red-600 text-xl">⚠️</span>
-            </div>
-            <p className="text-red-600 font-semibold mb-2">Unable to load latest news</p>
-            <p className="text-red-500 text-sm mb-4">Please check your internet connection and try again.</p>
-            <button 
-              onClick={() => window.location.reload()} 
-              className="bg-red-600 text-white px-6 py-2 rounded-lg text-sm hover:bg-red-700 transition-colors font-medium"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    if (articles.length === 0) {
-      const isFiltered = sentimentFilter !== 'all';
-      return (
-        <div className="text-center py-12 sm:py-16">
-          <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-            <span className="text-gray-400 text-2xl">📰</span>
-          </div>
-          <p className="text-gray-500 font-medium">
-            {isFiltered ? `No ${sentimentFilter} articles found.` : 'No articles available at the moment.'}
-          </p>
-          <p className="text-gray-400 text-sm mt-1">
-            {isFiltered ? 'Try selecting a different sentiment filter.' : 'Check back later for updates.'}
-          </p>
-        </div>
-      );
-    }
-
-    return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-        {articles.map((article, index) => (
-          <ArticleCard 
-            key={`${category}-${index}`} 
-            article={article} 
-            showSponsorButton={category === 'investigations'}
-          />
-        ))}
-      </div>
-    );
-  };
-
   return (
     <div className="w-full">
       <Tabs defaultValue="news" className="w-full">
@@ -173,84 +107,58 @@ const CategoryTabs = () => {
         </div>
         
         <TabsContent value="news" className="mt-0">
-          <div className="mb-6 sm:mb-8">
-            <div className="flex items-center space-x-3 mb-3">
-              <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-blue-600 rounded-full"></div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Latest News</h2>
-            </div>
-            <p className="text-sm sm:text-base text-gray-600 pl-7 mb-6">Stay updated with the latest developments from the Middle East</p>
-            
-            {/* AI Status and Sentiment Filter */}
-            <div className="pl-7 space-y-3">
-              {/* AI Status Messages */}
-              <div className="flex items-center space-x-4">
-                {isAnalyzing && (
-                  <div className="text-sm text-blue-600 bg-blue-50 px-3 py-1 rounded-full flex items-center space-x-2">
-                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
-                    <span>🤖 Analyzing sentiment...</span>
-                  </div>
-                )}
-                {!isModelReady && !isAnalyzing && (
-                  <div className="text-sm text-orange-600 bg-orange-50 px-3 py-1 rounded-full flex items-center space-x-2">
-                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-orange-600"></div>
-                    <span>🔄 Loading AI model...</span>
-                  </div>
-                )}
-                {isModelReady && !isAnalyzing && (
-                  <div className="text-sm text-green-600 bg-green-50 px-3 py-1 rounded-full">
-                    ✅ AI model ready
-                  </div>
-                )}
-              </div>
-              
-              {/* Sentiment Filter */}
-              <div className="flex justify-start">
-                <SentimentFilter 
-                  selectedSentiment={sentimentFilter}
-                  onSentimentChange={setSentimentFilter}
-                />
-              </div>
-            </div>
-          </div>
-          {renderArticles(newsArticles, 'news')}
+          <TabHeader
+            title="Latest News"
+            description="Stay updated with the latest developments from the Middle East"
+            color="blue"
+            sentimentFilter={sentimentFilter}
+            onSentimentChange={setSentimentFilter}
+            showAIStatus={true}
+            isAnalyzing={isAnalyzing}
+            isModelReady={isModelReady}
+          />
+          <ArticleGrid
+            articles={newsArticles}
+            category="news"
+            isLoading={rssLoading}
+            error={rssError}
+            sentimentFilter={sentimentFilter}
+          />
         </TabsContent>
         
         <TabsContent value="investigations" className="mt-0">
-          <div className="mb-6 sm:mb-8">
-            <div className="flex items-center space-x-3 mb-3">
-              <div className="w-1 h-8 bg-gradient-to-b from-red-500 to-red-600 rounded-full"></div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Investigative Reports</h2>
-            </div>
-            <p className="text-sm sm:text-base text-gray-600 pl-7 mb-6">In-depth analysis and investigative journalism</p>
-            
-            {/* Sentiment Filter for Investigations */}
-            <div className="pl-7">
-              <SentimentFilter 
-                selectedSentiment={sentimentFilter}
-                onSentimentChange={setSentimentFilter}
-              />
-            </div>
-          </div>
-          {renderArticles(investigationsArticles, 'investigations')}
+          <TabHeader
+            title="Investigative Reports"
+            description="In-depth analysis and investigative journalism"
+            color="red"
+            sentimentFilter={sentimentFilter}
+            onSentimentChange={setSentimentFilter}
+          />
+          <ArticleGrid
+            articles={investigationsArticles}
+            category="investigations"
+            isLoading={false}
+            error={null}
+            sentimentFilter={sentimentFilter}
+            showSponsorButton={true}
+          />
         </TabsContent>
         
         <TabsContent value="exclusive" className="mt-0">
-          <div className="mb-6 sm:mb-8">
-            <div className="flex items-center space-x-3 mb-3">
-              <div className="w-1 h-8 bg-gradient-to-b from-green-500 to-green-600 rounded-full"></div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Exclusive Sources</h2>
-            </div>
-            <p className="text-sm sm:text-base text-gray-600 pl-7 mb-6">Exclusive stories from our trusted network of sources</p>
-            
-            {/* Sentiment Filter for Exclusive */}
-            <div className="pl-7">
-              <SentimentFilter 
-                selectedSentiment={sentimentFilter}
-                onSentimentChange={setSentimentFilter}
-              />
-            </div>
-          </div>
-          {renderArticles(exclusiveArticles, 'exclusive')}
+          <TabHeader
+            title="Exclusive Sources"
+            description="Exclusive stories from our trusted network of sources"
+            color="green"
+            sentimentFilter={sentimentFilter}
+            onSentimentChange={setSentimentFilter}
+          />
+          <ArticleGrid
+            articles={exclusiveArticles}
+            category="exclusive"
+            isLoading={false}
+            error={null}
+            sentimentFilter={sentimentFilter}
+          />
         </TabsContent>
       </Tabs>
     </div>
