@@ -42,7 +42,7 @@ const ServicesSection = () => {
     {
       id: 3,
       title: 'Journalism Mentorship Program',
-      description: 'Join our comprehensive mentorship program to learn from experienced journalists and develop your reporting skills in today\'s media landscape.',
+      description: "Join our comprehensive mentorship program to learn from experienced journalists and develop your reporting skills in today's media landscape.",
       icon: GraduationCap,
       buttonText: 'Apply Now',
       color: 'bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700',
@@ -80,7 +80,6 @@ const ServicesSection = () => {
                 className={`group relative bg-white rounded-3xl p-8 text-center hover:shadow-2xl ${service.shadowColor} transition-all duration-500 transform hover:-translate-y-3 border-2 ${service.borderColor} hover:border-opacity-50 overflow-hidden`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                {/* Background decoration */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-gray-50 to-transparent rounded-full transform translate-x-16 -translate-y-16 group-hover:scale-150 transition-transform duration-700"></div>
                 
                 <div className={`relative inline-flex items-center justify-center w-20 h-20 ${service.iconBg} rounded-3xl mb-8 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg`}>
@@ -122,12 +121,12 @@ const ServicesSection = () => {
           })}
         </div>
 
-        {/* Enhanced Call to Action */}
         <div className="text-center mt-16 lg:mt-24">
-          <div className="relative bg-gradient-to-r from-navy-900 via-blue-900 to-navy-900 rounded-3xl p-8 sm:p-12 lg:p-16 text-white overflow-hidden">
-            {/* Background pattern */}
+          <div className="relative bg-gradient-to-r from-gray-900 via-blue-900 to-gray-900 rounded-3xl p-8 sm:p-12 lg:p-16 text-white overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
-            <div className="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+            <div className="absolute top-0 left-0 w-full h-full opacity-20" style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+            }}></div>
             
             <div className="relative z-10">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 rounded-2xl mb-6 backdrop-blur-sm">
@@ -139,7 +138,7 @@ const ServicesSection = () => {
               <p className="text-blue-100 mb-8 sm:mb-10 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
                 Join our community of truth-seekers, whistleblowers, and changemakers. Together, we're shaping the future of independent journalism.
               </p>
-              <button className="bg-white text-navy-900 px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-bold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 inline-flex items-center space-x-3 text-base sm:text-lg shadow-2xl">
+              <button className="bg-white text-gray-900 px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-bold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 inline-flex items-center space-x-3 text-base sm:text-lg shadow-2xl">
                 <span>Contact Us Today</span>
                 <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6" />
               </button>
