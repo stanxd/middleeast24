@@ -1,21 +1,14 @@
-
 import React from 'react';
-
 const Footer = () => {
-  return (
-    <footer className="bg-navy-900 text-white">
+  return <footer className="bg-navy-900 text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-4 gap-8">
           {/* Logo and Description */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <img 
-                src="/lovable-uploads/d7c6804d-088a-4968-a327-f9e698a51495.png" 
-                alt="MiddleEast24 Logo" 
-                className="h-10 w-10"
-              />
+              <img src="/lovable-uploads/d7c6804d-088a-4968-a327-f9e698a51495.png" alt="MiddleEast24 Logo" className="h-10 w-10" />
               <div>
-                <h3 className="text-xl font-bold">ME4</h3>
+                
                 <p className="text-sm text-gray-400">Middle East 24</p>
               </div>
             </div>
@@ -68,8 +61,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;

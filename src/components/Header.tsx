@@ -1,12 +1,8 @@
-
 import React, { useState } from 'react';
 import { Search, Menu, X } from 'lucide-react';
-
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  return (
-    <header className="bg-white shadow-lg sticky top-0 z-50">
+  return <header className="bg-white shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4">
         {/* Top bar */}
         <div className="flex items-center justify-between py-2 border-b">
@@ -14,12 +10,12 @@ const Header = () => {
             Breaking: Latest updates from the Middle East
           </div>
           <div className="text-sm text-gray-600">
-            {new Date().toLocaleDateString('en-US', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}
+            {new Date().toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })}
           </div>
         </div>
 
@@ -27,13 +23,9 @@ const Header = () => {
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
           <div className="flex items-center space-x-3">
-            <img 
-              src="/lovable-uploads/d7c6804d-088a-4968-a327-f9e698a51495.png" 
-              alt="MiddleEast24 Logo" 
-              className="h-12 w-12"
-            />
+            <img src="/lovable-uploads/d7c6804d-088a-4968-a327-f9e698a51495.png" alt="MiddleEast24 Logo" className="h-12 w-12" />
             <div>
-              <h1 className="text-3xl font-bold text-navy-900">ME4</h1>
+              
               <p className="text-sm text-gray-600 uppercase tracking-wider">Middle East 24</p>
             </div>
           </div>
@@ -53,18 +45,14 @@ const Header = () => {
               <Search className="h-5 w-5 text-gray-600" />
             </button>
             
-            <button 
-              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
+            <button className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors" onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <nav className="lg:hidden py-4 border-t">
+        {isMenuOpen && <nav className="lg:hidden py-4 border-t">
             <div className="flex flex-col space-y-4">
               <a href="#" className="text-gray-700 hover:text-navy-900 font-medium">Home</a>
               <a href="#" className="text-gray-700 hover:text-navy-900 font-medium">News</a>
@@ -72,11 +60,8 @@ const Header = () => {
               <a href="#" className="text-gray-700 hover:text-navy-900 font-medium">Exclusive Sources</a>
               <a href="#" className="text-gray-700 hover:text-navy-900 font-medium">About</a>
             </div>
-          </nav>
-        )}
+          </nav>}
       </div>
-    </header>
-  );
+    </header>;
 };
-
 export default Header;
