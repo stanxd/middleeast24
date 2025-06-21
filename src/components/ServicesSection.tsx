@@ -1,8 +1,11 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Heart, FileText, GraduationCap, ArrowRight } from 'lucide-react';
+import DonationModal from './DonationModal';
 
 const ServicesSection = () => {
+  const [donationModalOpen, setDonationModalOpen] = useState(false);
+
   const services = [
     {
       id: 1,
@@ -13,7 +16,8 @@ const ServicesSection = () => {
       color: 'bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700',
       shadowColor: 'shadow-red-200',
       iconBg: 'bg-red-100',
-      iconColor: 'text-red-600'
+      iconColor: 'text-red-600',
+      action: () => setDonationModalOpen(true)
     },
     {
       id: 2,
@@ -71,7 +75,10 @@ const ServicesSection = () => {
                   {service.description}
                 </p>
                 
-                <button className={`${service.color} text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold transition-all duration-300 transform group-hover:scale-105 inline-flex items-center space-x-2 text-sm sm:text-base shadow-lg`}>
+                <button 
+                  onClick={service.action}
+                  className={`${service.color} text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold transition-all duration-300 transform group-hover:scale-105 inline-flex items-center space-x-2 text-sm sm:text-base shadow-lg`}
+                >
                   <span>{service.buttonText}</span>
                   <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform duration-300" />
                 </button>
@@ -96,6 +103,12 @@ const ServicesSection = () => {
           </div>
         </div>
       </div>
+
+      <DonationModal
+        isOpen={donationModalOpen}
+        onClose={() => setDonationModalOpen(false)}
+        type="donation"
+      />
     </section>
   );
 };
