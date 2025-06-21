@@ -11,10 +11,10 @@ const SentimentFilter: React.FC<SentimentFilterProps> = ({
   onSentimentChange 
 }) => {
   const sentimentOptions = [
-    { value: 'all', label: 'All', color: 'bg-gray-400', hoverColor: 'hover:bg-gray-500' },
-    { value: 'positive', label: 'Positive', color: 'bg-green-500', hoverColor: 'hover:bg-green-600' },
-    { value: 'neutral', label: 'Neutral', color: 'bg-blue-500', hoverColor: 'hover:bg-blue-600' },
-    { value: 'negative', label: 'Negative', color: 'bg-red-500', hoverColor: 'hover:bg-red-600' }
+    { value: 'all', color: 'bg-gray-400', hoverColor: 'hover:bg-gray-500' },
+    { value: 'positive', color: 'bg-green-500', hoverColor: 'hover:bg-green-600' },
+    { value: 'neutral', color: 'bg-blue-500', hoverColor: 'hover:bg-blue-600' },
+    { value: 'negative', color: 'bg-red-500', hoverColor: 'hover:bg-red-600' }
   ];
 
   return (
@@ -26,16 +26,13 @@ const SentimentFilter: React.FC<SentimentFilterProps> = ({
             key={option.value}
             onClick={() => onSentimentChange(option.value)}
             className={`
-              flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200
+              w-8 h-1 rounded-full transition-all duration-200 cursor-pointer
               ${selectedSentiment === option.value 
-                ? `${option.color} text-white shadow-md` 
-                : `bg-gray-100 text-gray-600 ${option.hoverColor} hover:text-white`
+                ? `${option.color} shadow-md scale-110` 
+                : `${option.color} opacity-50 hover:opacity-100 hover:scale-105`
               }
             `}
-          >
-            <div className={`w-4 h-1 rounded-full ${option.color}`}></div>
-            <span className="text-sm font-medium">{option.label}</span>
-          </button>
+          />
         ))}
       </div>
     </div>
