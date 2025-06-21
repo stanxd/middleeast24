@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -12,7 +13,7 @@ import { Switch } from '@/components/ui/switch';
 import { updateStatus, deleteRecord, getStatusBadgeVariant, Article } from '../utils/adminUtils';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Plus, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, EyeOff, Upload, X } from 'lucide-react';
 
 interface AdminArticlesTabProps {
   articles?: Article[];
@@ -23,6 +24,9 @@ const AdminArticlesTab: React.FC<AdminArticlesTabProps> = ({ articles, refetchAr
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     title: '',
     excerpt: '',
@@ -73,6 +77,82 @@ const AdminArticlesTab: React.FC<AdminArticlesTabProps> = ({ articles, refetchAr
     }
   };
 
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "Invalid file type",
+          description: "Please select an image file",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please select an image smaller than 5MB",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      setSelectedImage(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const uploadImage = async (file: File): Promise<string | null> => {
+    try {
+      setUploadingImage(true);
+      
+      // Generate unique filename
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `articles/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('article-images')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      // Get public URL
+      const { data } = supabase.storage
+        .from('article-images')
+        .getPublicUrl(filePath);
+
+      return data.publicUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast({
+        title: "Upload failed",
+        description: "Failed to upload image. Please try again.",
+        variant: "destructive"
+      });
+      return null;
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null);
+    setFormData(prev => ({ ...prev, image_url: '' }));
+  };
+
   const handleEdit = (article: Article) => {
     setEditingArticle(article);
     setFormData({
@@ -86,6 +166,8 @@ const AdminArticlesTab: React.FC<AdminArticlesTabProps> = ({ articles, refetchAr
       tags: article.tags?.join(', ') || '',
       status: article.status
     });
+    setImagePreview(article.image_url || null);
+    setSelectedImage(null);
     setIsDialogOpen(true);
   };
 
@@ -102,11 +184,24 @@ const AdminArticlesTab: React.FC<AdminArticlesTabProps> = ({ articles, refetchAr
       tags: '',
       status: 'draft'
     });
+    setImagePreview(null);
+    setSelectedImage(null);
     setIsDialogOpen(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    let imageUrl = formData.image_url;
+
+    // Upload new image if selected
+    if (selectedImage) {
+      const uploadedUrl = await uploadImage(selectedImage);
+      if (!uploadedUrl) {
+        return; // Upload failed, don't proceed
+      }
+      imageUrl = uploadedUrl;
+    }
 
     const articleData = {
       title: formData.title,
@@ -114,7 +209,7 @@ const AdminArticlesTab: React.FC<AdminArticlesTabProps> = ({ articles, refetchAr
       content: formData.content,
       author: formData.author,
       category: formData.category,
-      image_url: formData.image_url || null,
+      image_url: imageUrl || null,
       featured: formData.featured,
       tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : null,
       status: formData.status
@@ -229,15 +324,56 @@ const AdminArticlesTab: React.FC<AdminArticlesTabProps> = ({ articles, refetchAr
                     </Select>
                   </div>
                 </div>
+                
+                {/* Image Upload Section */}
                 <div>
-                  <Label htmlFor="image_url">Image URL</Label>
-                  <Input
-                    id="image_url"
-                    value={formData.image_url}
-                    onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
-                    placeholder="https://example.com/image.jpg"
-                  />
+                  <Label>Article Image</Label>
+                  <div className="mt-2 space-y-4">
+                    {imagePreview && (
+                      <div className="relative inline-block">
+                        <img 
+                          src={imagePreview} 
+                          alt="Preview" 
+                          className="w-32 h-32 object-cover rounded-lg border"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0"
+                          onClick={removeImage}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    )}
+                    
+                    <div>
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageSelect}
+                        className="hidden"
+                        id="image-upload"
+                      />
+                      <Label htmlFor="image-upload" asChild>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          disabled={uploadingImage}
+                          className="cursor-pointer"
+                        >
+                          <Upload className="h-4 w-4 mr-2" />
+                          {uploadingImage ? 'Uploading...' : selectedImage ? 'Change Image' : 'Upload Image'}
+                        </Button>
+                      </Label>
+                      <p className="text-sm text-gray-500 mt-1">
+                        Supported formats: JPG, PNG, GIF (max 5MB)
+                      </p>
+                    </div>
+                  </div>
                 </div>
+
                 <div>
                   <Label htmlFor="tags">Tags (comma separated)</Label>
                   <Input
@@ -278,8 +414,8 @@ const AdminArticlesTab: React.FC<AdminArticlesTabProps> = ({ articles, refetchAr
                   <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                     Cancel
                   </Button>
-                  <Button type="submit">
-                    {editingArticle ? 'Update' : 'Create'} Article
+                  <Button type="submit" disabled={uploadingImage}>
+                    {uploadingImage ? 'Processing...' : editingArticle ? 'Update Article' : 'Create Article'}
                   </Button>
                 </div>
               </form>
