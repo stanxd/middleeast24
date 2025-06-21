@@ -18,36 +18,45 @@ const CategoryTabs = () => {
   // Process articles with sentiment analysis
   useEffect(() => {
     const processArticlesWithSentiment = async () => {
-      if (!isModelReady || rssArticles.length === 0) {
+      // Always set the RSS articles first, even without sentiment
+      if (rssArticles.length > 0) {
         setProcessedArticles(rssArticles);
+      }
+
+      if (!isModelReady || rssArticles.length === 0) {
         return;
       }
 
       setIsAnalyzing(true);
       console.log('Starting sentiment analysis for articles...');
 
-      const articlesWithSentiment = await Promise.all(
-        rssArticles.map(async (article) => {
-          try {
-            const sentimentResult = await analyzeSentiment(article.title + ' ' + article.excerpt);
-            if (sentimentResult) {
-              return {
-                ...article,
-                sentiment: sentimentResult.label,
-                sentimentConfidence: sentimentResult.confidence
-              };
+      try {
+        const articlesWithSentiment = await Promise.all(
+          rssArticles.slice(0, 15).map(async (article) => {
+            try {
+              const sentimentResult = await analyzeSentiment(article.title + ' ' + article.excerpt);
+              if (sentimentResult) {
+                return {
+                  ...article,
+                  sentiment: sentimentResult.label,
+                  sentimentConfidence: sentimentResult.confidence
+                };
+              }
+              return article;
+            } catch (error) {
+              console.error('Error analyzing sentiment for article:', article.id, error);
+              return article;
             }
-            return article;
-          } catch (error) {
-            console.error('Error analyzing sentiment for article:', article.id, error);
-            return article;
-          }
-        })
-      );
+          })
+        );
 
-      setProcessedArticles(articlesWithSentiment);
-      setIsAnalyzing(false);
-      console.log('Sentiment analysis completed');
+        setProcessedArticles(articlesWithSentiment);
+        console.log('Sentiment analysis completed');
+      } catch (error) {
+        console.error('Error in sentiment analysis process:', error);
+      } finally {
+        setIsAnalyzing(false);
+      }
     };
 
     processArticlesWithSentiment();
@@ -162,26 +171,6 @@ const CategoryTabs = () => {
             </TabsTrigger>
           </TabsList>
         </div>
-
-        {/* Sentiment Filter */}
-        <div className="mb-6 flex justify-between items-center">
-          <div className="flex items-center space-x-4">
-            {isAnalyzing && (
-              <div className="text-sm text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-                🤖 Analyzing sentiment...
-              </div>
-            )}
-            {!isModelReady && (
-              <div className="text-sm text-orange-600 bg-orange-50 px-3 py-1 rounded-full">
-                🔄 Loading AI model...
-              </div>
-            )}
-          </div>
-          <SentimentFilter 
-            selectedSentiment={sentimentFilter}
-            onSentimentChange={setSentimentFilter}
-          />
-        </div>
         
         <TabsContent value="news" className="mt-0">
           <div className="mb-6 sm:mb-8">
@@ -189,7 +178,39 @@ const CategoryTabs = () => {
               <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-blue-600 rounded-full"></div>
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Latest News</h2>
             </div>
-            <p className="text-sm sm:text-base text-gray-600 pl-7">Stay updated with the latest developments from the Middle East</p>
+            <p className="text-sm sm:text-base text-gray-600 pl-7 mb-6">Stay updated with the latest developments from the Middle East</p>
+            
+            {/* AI Status and Sentiment Filter */}
+            <div className="pl-7 space-y-3">
+              {/* AI Status Messages */}
+              <div className="flex items-center space-x-4">
+                {isAnalyzing && (
+                  <div className="text-sm text-blue-600 bg-blue-50 px-3 py-1 rounded-full flex items-center space-x-2">
+                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
+                    <span>🤖 Analyzing sentiment...</span>
+                  </div>
+                )}
+                {!isModelReady && !isAnalyzing && (
+                  <div className="text-sm text-orange-600 bg-orange-50 px-3 py-1 rounded-full flex items-center space-x-2">
+                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-orange-600"></div>
+                    <span>🔄 Loading AI model...</span>
+                  </div>
+                )}
+                {isModelReady && !isAnalyzing && (
+                  <div className="text-sm text-green-600 bg-green-50 px-3 py-1 rounded-full">
+                    ✅ AI model ready
+                  </div>
+                )}
+              </div>
+              
+              {/* Sentiment Filter */}
+              <div className="flex justify-start">
+                <SentimentFilter 
+                  selectedSentiment={sentimentFilter}
+                  onSentimentChange={setSentimentFilter}
+                />
+              </div>
+            </div>
           </div>
           {renderArticles(newsArticles, 'news')}
         </TabsContent>
@@ -200,7 +221,15 @@ const CategoryTabs = () => {
               <div className="w-1 h-8 bg-gradient-to-b from-red-500 to-red-600 rounded-full"></div>
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Investigative Reports</h2>
             </div>
-            <p className="text-sm sm:text-base text-gray-600 pl-7">In-depth analysis and investigative journalism</p>
+            <p className="text-sm sm:text-base text-gray-600 pl-7 mb-6">In-depth analysis and investigative journalism</p>
+            
+            {/* Sentiment Filter for Investigations */}
+            <div className="pl-7">
+              <SentimentFilter 
+                selectedSentiment={sentimentFilter}
+                onSentimentChange={setSentimentFilter}
+              />
+            </div>
           </div>
           {renderArticles(investigationsArticles, 'investigations')}
         </TabsContent>
@@ -211,7 +240,15 @@ const CategoryTabs = () => {
               <div className="w-1 h-8 bg-gradient-to-b from-green-500 to-green-600 rounded-full"></div>
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Exclusive Sources</h2>
             </div>
-            <p className="text-sm sm:text-base text-gray-600 pl-7">Exclusive stories from our trusted network of sources</p>
+            <p className="text-sm sm:text-base text-gray-600 pl-7 mb-6">Exclusive stories from our trusted network of sources</p>
+            
+            {/* Sentiment Filter for Exclusive */}
+            <div className="pl-7">
+              <SentimentFilter 
+                selectedSentiment={sentimentFilter}
+                onSentimentChange={setSentimentFilter}
+              />
+            </div>
           </div>
           {renderArticles(exclusiveArticles, 'exclusive')}
         </TabsContent>
