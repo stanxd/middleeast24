@@ -1,13 +1,9 @@
-
 import React, { useState } from 'react';
 import { Search, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
-  return (
-    <header className="bg-white shadow-lg sticky top-0 z-50">
+  return <header className="bg-white shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4">
         {/* Main header */}
         <div className="flex items-center justify-between py-4">
@@ -22,9 +18,9 @@ const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8">
             <Link to="/" className="text-gray-700 hover:text-navy-900 font-medium transition-colors">Home</Link>
-            <a href="#" className="text-gray-700 hover:text-navy-900 font-medium transition-colors">News</a>
-            <a href="#" className="text-gray-700 hover:text-navy-900 font-medium transition-colors">Investigations</a>
-            <a href="#" className="text-gray-700 hover:text-navy-900 font-medium transition-colors">Exclusive Sources</a>
+            
+            
+            
             <Link to="/about" className="text-gray-700 hover:text-navy-900 font-medium transition-colors">About</Link>
             <Link to="/contact" className="text-gray-700 hover:text-navy-900 font-medium transition-colors">Contact</Link>
           </nav>
@@ -35,49 +31,30 @@ const Header = () => {
               <Search className="h-5 w-5 text-gray-600" />
             </button>
             
-            <button 
-              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors" 
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
+            <button className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors" onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <nav className="lg:hidden py-4 border-t">
+        {isMenuOpen && <nav className="lg:hidden py-4 border-t">
             <div className="flex flex-col space-y-4">
-              <Link 
-                to="/" 
-                className="text-gray-700 hover:text-navy-900 font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
+              <Link to="/" className="text-gray-700 hover:text-navy-900 font-medium" onClick={() => setIsMenuOpen(false)}>
                 Home
               </Link>
               <a href="#" className="text-gray-700 hover:text-navy-900 font-medium">News</a>
               <a href="#" className="text-gray-700 hover:text-navy-900 font-medium">Investigations</a>
               <a href="#" className="text-gray-700 hover:text-navy-900 font-medium">Exclusive Sources</a>
-              <Link 
-                to="/about" 
-                className="text-gray-700 hover:text-navy-900 font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
+              <Link to="/about" className="text-gray-700 hover:text-navy-900 font-medium" onClick={() => setIsMenuOpen(false)}>
                 About
               </Link>
-              <Link 
-                to="/contact" 
-                className="text-gray-700 hover:text-navy-900 font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
+              <Link to="/contact" className="text-gray-700 hover:text-navy-900 font-medium" onClick={() => setIsMenuOpen(false)}>
                 Contact
               </Link>
             </div>
-          </nav>
-        )}
+          </nav>}
       </div>
-    </header>
-  );
+    </header>;
 };
-
 export default Header;
