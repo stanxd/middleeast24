@@ -1,7 +1,6 @@
-
-
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Twitter } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -19,6 +18,17 @@ const Footer = () => {
             <p className="text-gray-400 text-sm">
               Your trusted source for Middle East news, investigations, and exclusive reporting.
             </p>
+            {/* Social Media */}
+            <div className="flex space-x-4">
+              <a 
+                href="https://twitter.com/Middleeast_24" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <Twitter className="h-5 w-5" />
+              </a>
+            </div>
           </div>
 
           {/* Quick Links */}
@@ -68,4 +78,3 @@ const Footer = () => {
 };
 
 export default Footer;
-

@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import { Heart, FileText, GraduationCap, ArrowRight, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -58,16 +56,16 @@ const ServicesSection = () => {
   ];
 
   return (
-    <section className="py-16 lg:py-24 services-gradient">
+    <section className="py-16 lg:py-24 bg-gray-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 lg:mb-20">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-6">
             <span className="text-2xl">🚀</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
-            Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-200">Services</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+            Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Services</span>
           </h2>
-          <p className="text-lg sm:text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Empowering truth through technology, community, and education. Join us in shaping the future of independent journalism.
           </p>
         </div>
@@ -168,4 +166,3 @@ const ServicesSection = () => {
 };
 
 export default ServicesSection;
-
