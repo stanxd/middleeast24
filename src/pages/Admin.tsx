@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Header from '../components/Header';
@@ -9,6 +10,7 @@ import AdminContactsTab from './admin/components/AdminContactsTab';
 import AdminReportsTab from './admin/components/AdminReportsTab';
 import AdminMentorshipTab from './admin/components/AdminMentorshipTab';
 import AdminArticlesTab from './admin/components/AdminArticlesTab';
+import { Article } from './admin/utils/adminUtils';
 
 const Admin = () => {
   // Fetch contact submissions
@@ -63,7 +65,7 @@ const Admin = () => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data;
+      return data as Article[];
     }
   });
 
