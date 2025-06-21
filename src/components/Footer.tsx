@@ -1,17 +1,20 @@
+
 import React from 'react';
+import { Link } from 'react-router-dom';
+
 const Footer = () => {
-  return <footer className="bg-navy-900 text-white">
+  return (
+    <footer className="bg-navy-900 text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-4 gap-8">
           {/* Logo and Description */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-3">
+            <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
               <img src="/lovable-uploads/d7c6804d-088a-4968-a327-f9e698a51495.png" alt="MiddleEast24 Logo" className="h-10 w-10" />
               <div>
-                
                 <p className="text-sm text-gray-400">Middle East 24</p>
               </div>
-            </div>
+            </Link>
             <p className="text-gray-400 text-sm">
               Your trusted source for Middle East news, investigations, and exclusive reporting.
             </p>
@@ -21,7 +24,7 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-semibold">Quick Links</h4>
             <ul className="space-y-2 text-sm text-gray-400">
-              <li><a href="#" className="hover:text-white transition-colors">Home</a></li>
+              <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
               <li><a href="#" className="hover:text-white transition-colors">News</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Investigations</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Exclusive Sources</a></li>
@@ -57,10 +60,12 @@ const Footer = () => {
           <div className="flex space-x-6 text-sm text-gray-400 mt-4 md:mt-0">
             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-white transition-colors">Contact Us</a>
+            <a href="mailto:s707tan@gmail.com" className="hover:text-white transition-colors">Contact Us</a>
           </div>
         </div>
       </div>
-    </footer>;
+    </footer>
+  );
 };
+
 export default Footer;
