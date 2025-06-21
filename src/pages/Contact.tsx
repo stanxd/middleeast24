@@ -67,9 +67,9 @@ const Contact = () => {
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
-              Contact <span className="text-transparent bg-clip-text bg-gradient-to-br from-slate-700 via-blue-800 to-slate-900">Us</span>
+              Contact <span className="text-transparent bg-clip-text bg-gradient-to-br from-slate-700 via-[#0003ff] to-slate-900">Us</span>
             </h1>
-            <div className="w-24 h-1 bg-gradient-to-br from-slate-700 via-blue-800 to-slate-900 mx-auto mb-8"></div>
+            <div className="w-24 h-1 bg-gradient-to-br from-slate-700 via-[#0003ff] to-slate-900 mx-auto mb-8"></div>
             <p className="text-lg text-gray-600">
               Get in touch with our team. We'd love to hear from you.
             </p>
@@ -120,7 +120,7 @@ const Contact = () => {
                       <FormMessage />
                     </FormItem>} />
 
-                <Button type="submit" className="w-full bg-gradient-to-br from-slate-700 via-blue-800 to-slate-900 hover:from-slate-800 hover:via-blue-900 hover:to-slate-950 text-white py-4 text-lg font-semibold rounded-xl" disabled={form.formState.isSubmitting}>
+                <Button type="submit" className="w-full bg-gradient-to-br from-slate-700 via-[#0003ff] to-slate-900 hover:from-slate-800 hover:via-[#0003ff] hover:to-slate-950 text-white py-4 text-lg font-semibold rounded-xl" disabled={form.formState.isSubmitting}>
                   {form.formState.isSubmitting ? 'Sending...' : 'Send Message'}
                 </Button>
               </form>

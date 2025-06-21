@@ -12,9 +12,9 @@ const About = () => {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
-              About <span className="text-transparent bg-clip-text bg-gradient-to-br from-slate-700 via-blue-800 to-slate-900">MiddleEast24</span>
+              About <span className="text-transparent bg-clip-text bg-gradient-to-br from-slate-700 via-[#0003ff] to-slate-900">MiddleEast24</span>
             </h1>
-            <div className="w-24 h-1 bg-gradient-to-br from-slate-700 via-blue-800 to-slate-900 mx-auto mb-8"></div>
+            <div className="w-24 h-1 bg-gradient-to-br from-slate-700 via-[#0003ff] to-slate-900 mx-auto mb-8"></div>
           </div>
           
           <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-lg">

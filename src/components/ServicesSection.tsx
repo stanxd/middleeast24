@@ -1,60 +1,67 @@
-
 import React, { useState } from 'react';
 import { Heart, FileText, GraduationCap, ArrowRight, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DonationModal from './DonationModal';
 import InvestigativeReportModal from './InvestigativeReportModal';
+
 const ServicesSection = () => {
   const navigate = useNavigate();
   const [donationModalOpen, setDonationModalOpen] = useState(false);
   const [reportModalOpen, setReportModalOpen] = useState(false);
-  const services = [{
-    id: 1,
-    title: 'Support Independent Journalism',
-    description: 'Your donation helps us maintain editorial independence and continue our mission to deliver unbiased news and investigations that matter.',
-    icon: Heart,
-    buttonText: 'Donate Now',
-    color: 'bg-gradient-to-br from-slate-700 via-blue-800 to-slate-900 hover:from-slate-800 hover:via-blue-900 hover:to-slate-950',
-    shadowColor: 'shadow-slate-200 hover:shadow-slate-300',
-    iconBg: 'bg-red-50',
-    iconColor: 'text-red-600',
-    borderColor: 'border-red-100',
-    action: () => setDonationModalOpen(true)
-  }, {
-    id: 2,
-    title: 'Investigative Journalism Hub',
-    description: 'Submit confidential tips, documents, or leads for investigative stories. Help us uncover the truth that needs to be told.',
-    icon: FileText,
-    buttonText: 'Submit Report',
-    color: 'bg-gradient-to-br from-slate-700 via-blue-800 to-slate-900 hover:from-slate-800 hover:via-blue-900 hover:to-slate-950',
-    shadowColor: 'shadow-blue-200 hover:shadow-blue-300',
-    iconBg: 'bg-blue-50',
-    iconColor: 'text-blue-600',
-    borderColor: 'border-blue-100',
-    action: () => setReportModalOpen(true),
-    hasSecondaryButton: true,
-    secondaryButtonText: 'Request Report',
-    secondaryButtonIcon: Clock,
-    secondaryButtonLabel: 'Soon'
-  }, {
-    id: 3,
-    title: 'Journalism Mentorship Program',
-    description: "Join our comprehensive mentorship program to learn from experienced journalists and develop your reporting skills in today's media landscape.",
-    icon: GraduationCap,
-    buttonText: 'Apply Now',
-    color: 'bg-gradient-to-br from-slate-700 via-blue-800 to-slate-900 hover:from-slate-800 hover:via-blue-900 hover:to-slate-950',
-    shadowColor: 'shadow-green-200 hover:shadow-green-300',
-    iconBg: 'bg-green-50',
-    iconColor: 'text-green-600',
-    borderColor: 'border-green-100',
-    action: () => window.location.href = '/mentorship-application'
-  }];
-  return <section className="py-16 lg:py-24 bg-white">
+
+  const services = [
+    {
+      id: 1,
+      title: 'Support Independent Journalism',
+      description: 'Your donation helps us maintain editorial independence and continue our mission to deliver unbiased news and investigations that matter.',
+      icon: Heart,
+      buttonText: 'Donate Now',
+      color: 'bg-gradient-to-br from-slate-700 via-[#0003ff] to-slate-900 hover:from-slate-800 hover:via-[#0003ff] hover:to-slate-950',
+      shadowColor: 'shadow-slate-200 hover:shadow-slate-300',
+      iconBg: 'bg-red-50',
+      iconColor: 'text-red-600',
+      borderColor: 'border-red-100',
+      action: () => setDonationModalOpen(true)
+    },
+    {
+      id: 2,
+      title: 'Investigative Journalism Hub',
+      description: 'Submit confidential tips, documents, or leads for investigative stories. Help us uncover the truth that needs to be told.',
+      icon: FileText,
+      buttonText: 'Submit Report',
+      color: 'bg-gradient-to-br from-slate-700 via-[#0003ff] to-slate-900 hover:from-slate-800 hover:via-[#0003ff] hover:to-slate-950',
+      shadowColor: 'shadow-blue-200 hover:shadow-blue-300',
+      iconBg: 'bg-blue-50',
+      iconColor: 'text-blue-600',
+      borderColor: 'border-blue-100',
+      action: () => setReportModalOpen(true),
+      hasSecondaryButton: true,
+      secondaryButtonText: 'Request Report',
+      secondaryButtonIcon: Clock,
+      secondaryButtonLabel: 'Soon'
+    },
+    {
+      id: 3,
+      title: 'Journalism Mentorship Program',
+      description: "Join our comprehensive mentorship program to learn from experienced journalists and develop your reporting skills in today's media landscape.",
+      icon: GraduationCap,
+      buttonText: 'Apply Now',
+      color: 'bg-gradient-to-br from-slate-700 via-[#0003ff] to-slate-900 hover:from-slate-800 hover:via-[#0003ff] hover:to-slate-950',
+      shadowColor: 'shadow-green-200 hover:shadow-green-300',
+      iconBg: 'bg-green-50',
+      iconColor: 'text-green-600',
+      borderColor: 'border-green-100',
+      action: () => window.location.href = '/mentorship-application'
+    }
+  ];
+
+  return (
+    <section className="py-16 lg:py-24 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 lg:mb-20">
           
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            Our <span className="bg-clip-text bg-gradient-to-br from-slate-700 via-blue-800 to-slate-900 text-gray-950">Services</span>
+            Our <span className="bg-clip-text bg-gradient-to-br from-slate-700 via-[#0003ff] to-slate-900 text-gray-950">Services</span>
           </h2>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Empowering truth through technology, community, and education. Join us in shaping the future of independent journalism.
@@ -101,7 +108,7 @@ const ServicesSection = () => {
         </div>
 
         <div className="text-center mt-16 lg:mt-24">
-          <div className="relative bg-gradient-to-br from-slate-700 via-blue-800 to-slate-900 rounded-3xl p-8 sm:p-12 lg:p-16 text-white overflow-hidden">            
+          <div className="relative bg-gradient-to-br from-slate-700 via-[#0003ff] to-slate-900 rounded-3xl p-8 sm:p-12 lg:p-16 text-white overflow-hidden">            
             <div className="relative z-10">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 rounded-2xl mb-6 backdrop-blur-sm">
                 <span className="text-2xl">✨</span>
@@ -122,8 +129,9 @@ const ServicesSection = () => {
       </div>
 
       <DonationModal isOpen={donationModalOpen} onClose={() => setDonationModalOpen(false)} type="donation" />
-
       <InvestigativeReportModal isOpen={reportModalOpen} onClose={() => setReportModalOpen(false)} />
-    </section>;
+    </section>
+  );
 };
+
 export default ServicesSection;
