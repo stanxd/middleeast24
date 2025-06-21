@@ -10,7 +10,7 @@ const Footer = () => {
             <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
               <img src="/lovable-uploads/d7c6804d-088a-4968-a327-f9e698a51495.png" alt="MiddleEast24 Logo" className="h-10 w-10" />
               <div>
-                <p className="text-sm text-[#e0c000]">Middle East 24</p>
+                <p className="text-[#e0c000] text-base font-bold">Middle East 24</p>
               </div>
             </Link>
             <p className="text-gray-400 text-sm">
