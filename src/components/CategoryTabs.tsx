@@ -98,6 +98,56 @@ const CategoryTabs = () => {
     processArticlesWithSentiment();
   }, [publishedArticles, rssArticles, isModelReady, analyzeSentiment]);
 
+  // Process sample articles with sentiment analysis (for Investigations and Exclusive tabs)
+  useEffect(() => {
+    const processSampleArticlesWithSentiment = async () => {
+      if (!isModelReady) {
+        return;
+      }
+
+      setIsAnalyzing(true);
+      console.log('Starting sentiment analysis for sample articles...');
+
+      try {
+        // Apply sentiment analysis to sample articles
+        const sampleWithSentiment = await Promise.all(
+          sampleArticles.map(async (article) => {
+            try {
+              const sentimentResult = await analyzeSentiment(article.title + ' ' + article.excerpt);
+              if (sentimentResult) {
+                return {
+                  ...article,
+                  sentiment: sentimentResult.label,
+                  sentimentConfidence: sentimentResult.confidence
+                };
+              }
+              return article;
+            } catch (error) {
+              console.error('Error analyzing sentiment for sample article:', article.id, error);
+              return article;
+            }
+          })
+        );
+
+        // Update the sample articles with sentiment
+        sampleArticles.forEach((article, index) => {
+          if (sampleWithSentiment[index].sentiment) {
+            article.sentiment = sampleWithSentiment[index].sentiment;
+            article.sentimentConfidence = sampleWithSentiment[index].sentimentConfidence;
+          }
+        });
+        
+        console.log('Sample articles sentiment analysis completed');
+      } catch (error) {
+        console.error('Error in sample articles sentiment analysis process:', error);
+      } finally {
+        setIsAnalyzing(false);
+      }
+    };
+
+    processSampleArticlesWithSentiment();
+  }, [isModelReady, analyzeSentiment]);
+
   // Filter articles by sentiment
   const getFilteredArticles = (articles: Article[]) => {
     if (sentimentFilter === 'all') {
@@ -169,6 +219,9 @@ const CategoryTabs = () => {
             color="red"
             sentimentFilter={sentimentFilter}
             onSentimentChange={setSentimentFilter}
+            showAIStatus={true}
+            isAnalyzing={isAnalyzing}
+            isModelReady={isModelReady}
           />
           <ArticleGrid
             articles={investigationsArticles}
@@ -187,6 +240,9 @@ const CategoryTabs = () => {
             color="green"
             sentimentFilter={sentimentFilter}
             onSentimentChange={setSentimentFilter}
+            showAIStatus={true}
+            isAnalyzing={isAnalyzing}
+            isModelReady={isModelReady}
           />
           <ArticleGrid
             articles={exclusiveArticles}

@@ -24,11 +24,7 @@ const AIStatusIndicator: React.FC<AIStatusIndicatorProps> = ({
           <span>🔄 Loading AI model...</span>
         </div>
       )}
-      {isModelReady && !isAnalyzing && (
-        <div className="text-sm text-green-600 bg-green-50 px-3 py-1 rounded-full">
-          ✅ AI model ready
-        </div>
-      )}
+      {/* Model ready state is now silent - no indicator shown when ready */}
     </div>
   );
 };
