@@ -1,10 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Twitter } from 'lucide-react';
-
 const Footer = () => {
-  return (
-    <footer className="hero-gradient text-white">
+  return <footer className="hero-gradient text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-4 gap-8">
           {/* Logo and Description */}
@@ -12,7 +10,7 @@ const Footer = () => {
             <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
               <img src="/lovable-uploads/d7c6804d-088a-4968-a327-f9e698a51495.png" alt="MiddleEast24 Logo" className="h-10 w-10" />
               <div>
-                <p className="text-sm text-gray-400">Middle East 24</p>
+                <p className="text-sm text-[#e0c000]">Middle East 24</p>
               </div>
             </Link>
             <p className="text-gray-400 text-sm">
@@ -20,12 +18,7 @@ const Footer = () => {
             </p>
             {/* Social Media */}
             <div className="flex space-x-4">
-              <a 
-                href="https://twitter.com/Middleeast_24" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
+              <a href="https://twitter.com/Middleeast_24" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
                 <Twitter className="h-5 w-5" />
               </a>
             </div>
@@ -73,8 +66,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
