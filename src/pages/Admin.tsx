@@ -4,11 +4,13 @@ import { useQuery } from '@tanstack/react-query';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { supabase } from '@/integrations/supabase/client';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, Tabs
+Content, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminStats from './admin/components/AdminStats';
 import AdminContactsTab from './admin/components/AdminContactsTab';
 import AdminReportsTab from './admin/components/AdminReportsTab';
 import AdminMentorshipTab from './admin/components/AdminMentorshipTab';
+import AdminArticlesTab from './admin/components/AdminArticlesTab';
 
 const Admin = () => {
   // Fetch contact submissions
@@ -53,6 +55,20 @@ const Admin = () => {
     }
   });
 
+  // Fetch articles
+  const { data: articles, refetch: refetchArticles } = useQuery({
+    queryKey: ['articles'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data;
+    }
+  });
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -70,14 +86,23 @@ const Admin = () => {
             contactSubmissions={contactSubmissions}
             investigativeReports={investigativeReports}
             mentorshipApplications={mentorshipApplications}
+            articles={articles}
           />
 
-          <Tabs defaultValue="contacts" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-3">
+          <Tabs defaultValue="articles" className="space-y-4">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="articles">Articles</TabsTrigger>
               <TabsTrigger value="contacts">Contact Submissions</TabsTrigger>
               <TabsTrigger value="reports">Investigative Reports</TabsTrigger>
               <TabsTrigger value="mentorship">Mentorship Applications</TabsTrigger>
             </TabsList>
+            
+            <TabsContent value="articles">
+              <AdminArticlesTab 
+                articles={articles}
+                refetchArticles={refetchArticles}
+              />
+            </TabsContent>
             
             <TabsContent value="contacts">
               <AdminContactsTab 

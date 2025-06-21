@@ -9,6 +9,54 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      articles: {
+        Row: {
+          author: string
+          category: string
+          content: string
+          created_at: string
+          excerpt: string
+          featured: boolean
+          id: string
+          image_url: string | null
+          publish_date: string
+          status: string
+          tags: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author: string
+          category: string
+          content: string
+          created_at?: string
+          excerpt: string
+          featured?: boolean
+          id?: string
+          image_url?: string | null
+          publish_date?: string
+          status?: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string
+          category?: string
+          content?: string
+          created_at?: string
+          excerpt?: string
+          featured?: boolean
+          id?: string
+          image_url?: string | null
+          publish_date?: string
+          status?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contact_submissions: {
         Row: {
           created_at: string
@@ -48,6 +96,7 @@ export type Database = {
           description: string
           documents_description: string | null
           id: string
+          published_article_id: string | null
           status: string
           title: string
           urgency_level: string
@@ -60,6 +109,7 @@ export type Database = {
           description: string
           documents_description?: string | null
           id?: string
+          published_article_id?: string | null
           status?: string
           title: string
           urgency_level?: string
@@ -72,11 +122,20 @@ export type Database = {
           description?: string
           documents_description?: string | null
           id?: string
+          published_article_id?: string | null
           status?: string
           title?: string
           urgency_level?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "investigative_reports_published_article_id_fkey"
+            columns: ["published_article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mentorship_applications: {
         Row: {

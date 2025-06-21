@@ -1,11 +1,13 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { updateStatus, getStatusBadgeVariant, TableName } from '../utils/adminUtils';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { updateStatus, deleteRecord, getStatusBadgeVariant, TableName } from '../utils/adminUtils';
 import { useToast } from '@/hooks/use-toast';
+import { Eye, Trash2, Mail } from 'lucide-react';
 
 interface AdminContactsTabProps {
   contactSubmissions?: any[];
@@ -14,6 +16,7 @@ interface AdminContactsTabProps {
 
 const AdminContactsTab: React.FC<AdminContactsTabProps> = ({ contactSubmissions, refetchContacts }) => {
   const { toast } = useToast();
+  const [selectedContact, setSelectedContact] = useState<any>(null);
 
   const handleUpdateStatus = async (id: string, status: string) => {
     const { error } = await updateStatus('contact_submissions' as TableName, id, status);
@@ -28,6 +31,26 @@ const AdminContactsTab: React.FC<AdminContactsTabProps> = ({ contactSubmissions,
       toast({
         title: "Success",
         description: "Status updated successfully"
+      });
+      refetchContacts();
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this contact submission?')) return;
+
+    const { error } = await deleteRecord('contact_submissions' as TableName, id);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete contact submission",
+        variant: "destructive"
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "Contact submission deleted successfully"
       });
       refetchContacts();
     }
@@ -65,12 +88,46 @@ const AdminContactsTab: React.FC<AdminContactsTabProps> = ({ contactSubmissions,
                 <TableCell>{new Date(submission.created_at).toLocaleDateString()}</TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setSelectedContact(submission)}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-2xl">
+                        <DialogHeader>
+                          <DialogTitle>{selectedContact?.subject}</DialogTitle>
+                          <DialogDescription>
+                            From {selectedContact?.name} ({selectedContact?.email}) on {new Date(selectedContact?.created_at).toLocaleDateString()}
+                          </DialogDescription>
+                        </DialogHeader>
+                        {selectedContact && (
+                          <div className="space-y-4">
+                            <div>
+                              <h4 className="font-semibold">Message:</h4>
+                              <p className="text-sm whitespace-pre-wrap">{selectedContact.message}</p>
+                            </div>
+                          </div>
+                        )}
+                      </DialogContent>
+                    </Dialog>
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleUpdateStatus(submission.id, 'read')}
+                      onClick={() => handleUpdateStatus(submission.id, submission.status === 'unread' ? 'read' : 'completed')}
                     >
-                      Mark Read
+                      <Mail className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => handleDelete(submission.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </TableCell>
