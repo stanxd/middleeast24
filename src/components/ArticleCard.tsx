@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Clock, User, Share, DollarSign } from 'lucide-react';
 import { Article } from '../types/Article';
 import DonationModal from './DonationModal';
+import ArticleModal from './ArticleModal';
 
 interface ArticleCardProps {
   article: Article;
@@ -11,6 +12,7 @@ interface ArticleCardProps {
 
 const ArticleCard: React.FC<ArticleCardProps> = ({ article, showSponsorButton = false }) => {
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
+  const [articleModalOpen, setArticleModalOpen] = useState(false);
 
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -22,17 +24,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, showSponsorButton = 
   };
 
   const handleArticleClick = () => {
-    // For RSS articles with external links, try to open them
-    if (article.content.includes('http')) {
-      const urlMatch = article.content.match(/https?:\/\/[^\s]+/);
-      if (urlMatch) {
-        window.open(urlMatch[0], '_blank');
-        return;
-      }
-    }
-    
-    // Fallback: show article content
-    alert(`${article.title}\n\n${article.content.replace(/<[^>]*>/g, '')}`);
+    setArticleModalOpen(true);
   };
 
   return (
@@ -104,6 +96,12 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, showSponsorButton = 
         onClose={() => setSponsorModalOpen(false)}
         type="sponsorship"
         investigationTitle={article.title}
+      />
+
+      <ArticleModal
+        article={article}
+        isOpen={articleModalOpen}
+        onClose={() => setArticleModalOpen(false)}
       />
     </>
   );
