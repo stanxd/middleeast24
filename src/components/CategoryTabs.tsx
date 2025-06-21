@@ -7,6 +7,8 @@ import { useRSSFeed } from '../hooks/useRSSFeed';
 import { useSentimentAnalysis } from '../hooks/useSentimentAnalysis';
 import { sampleArticles } from '../data/sampleData';
 import { Article } from '../types/Article';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
 
 const CategoryTabs = () => {
   const { articles: rssArticles, loading: rssLoading, error: rssError } = useRSSFeed('https://english.alarabiya.net/feed/rss2/en/News.xml');
@@ -15,15 +17,49 @@ const CategoryTabs = () => {
   const [processedArticles, setProcessedArticles] = useState<Article[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
+  // Fetch published articles from database
+  const { data: publishedArticles, isLoading: articlesLoading } = useQuery({
+    queryKey: ['published-articles'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('status', 'published')
+        .order('publish_date', { ascending: false });
+      
+      if (error) throw error;
+      
+      // Convert database articles to match Article type
+      return data.map(article => ({
+        id: article.id,
+        title: article.title,
+        excerpt: article.excerpt,
+        content: article.content,
+        author: article.author,
+        category: article.category as 'News' | 'Investigations' | 'Exclusive Sources',
+        publishDate: new Date(article.publish_date).toLocaleDateString(),
+        image: article.image_url || '/placeholder.svg',
+        featured: article.featured,
+        tags: article.tags || []
+      })) as Article[];
+    }
+  });
+
   // Process articles with sentiment analysis
   useEffect(() => {
     const processArticlesWithSentiment = async () => {
-      // Always set the RSS articles first, even without sentiment
-      if (rssArticles.length > 0) {
-        setProcessedArticles(rssArticles);
+      // Combine published articles with RSS articles, prioritizing published articles
+      const allArticles = [
+        ...(publishedArticles || []),
+        ...rssArticles.slice(0, Math.max(0, 15 - (publishedArticles?.length || 0)))
+      ];
+
+      // Always set the combined articles first
+      if (allArticles.length > 0) {
+        setProcessedArticles(allArticles);
       }
 
-      if (!isModelReady || rssArticles.length === 0) {
+      if (!isModelReady || allArticles.length === 0) {
         return;
       }
 
@@ -32,7 +68,7 @@ const CategoryTabs = () => {
 
       try {
         const articlesWithSentiment = await Promise.all(
-          rssArticles.slice(0, 15).map(async (article) => {
+          allArticles.slice(0, 15).map(async (article) => {
             try {
               const sentimentResult = await analyzeSentiment(article.title + ' ' + article.excerpt);
               if (sentimentResult) {
@@ -60,7 +96,7 @@ const CategoryTabs = () => {
     };
 
     processArticlesWithSentiment();
-  }, [rssArticles, isModelReady, analyzeSentiment]);
+  }, [publishedArticles, rssArticles, isModelReady, analyzeSentiment]);
 
   // Filter articles by sentiment
   const getFilteredArticles = (articles: Article[]) => {
@@ -70,7 +106,7 @@ const CategoryTabs = () => {
     return articles.filter(article => article.sentiment === sentimentFilter);
   };
 
-  // For News tab, use processed RSS articles (limited to 15)
+  // For News tab, use processed articles (published + RSS combined)
   const newsArticles = getFilteredArticles(processedArticles.slice(0, 15));
   
   // For other tabs, use filtered sample articles
@@ -120,7 +156,7 @@ const CategoryTabs = () => {
           <ArticleGrid
             articles={newsArticles}
             category="news"
-            isLoading={rssLoading}
+            isLoading={articlesLoading || rssLoading}
             error={rssError}
             sentimentFilter={sentimentFilter}
           />
