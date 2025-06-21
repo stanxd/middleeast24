@@ -23,13 +23,13 @@ export const useSentimentAnalysis = () => {
       try {
         console.log('Loading sentiment analysis model...');
         
-        // Use the exact model name and ensure proper configuration
+        // Use the model with correct configuration for browser
         pipelineRef.current = await pipeline(
           'text-classification',
           'cardiffnlp/twitter-roberta-base-sentiment-latest',
           {
-            revision: 'main',
-            device: 'cpu'
+            device: 'wasm',
+            dtype: 'q8'
           }
         );
         
@@ -38,12 +38,15 @@ export const useSentimentAnalysis = () => {
       } catch (error) {
         console.error('Error loading sentiment analysis model:', error);
         
-        // Try alternative model identifier
+        // Try with the base model name
         try {
           console.log('Trying alternative model loading approach...');
           pipelineRef.current = await pipeline(
-            'sentiment-analysis',
-            'cardiffnlp/twitter-roberta-base-sentiment'
+            'text-classification',
+            'cardiffnlp/twitter-roberta-base-sentiment-latest',
+            {
+              device: 'wasm'
+            }
           );
           
           setIsModelReady(true);
