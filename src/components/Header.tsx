@@ -28,7 +28,7 @@ const Header = () => {
           {/* Search and Mobile Menu */}
           <div className="flex items-center space-x-4">
             <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-              <Search className="h-5 w-5 text-gray-600" />
+              
             </button>
             
             <button className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors" onClick={() => setIsMenuOpen(!isMenuOpen)}>
