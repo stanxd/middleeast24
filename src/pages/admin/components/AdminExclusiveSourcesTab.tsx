@@ -55,7 +55,7 @@ const AdminExclusiveSourcesTab: React.FC<AdminExclusiveSourcesTabProps> = ({
       // First delete the file if it exists
       if (fileUrl) {
         const { error: storageError } = await supabase.storage
-          .from('middleeast24-uploads')
+          .from('exclusive-sources')
           .remove([fileUrl]);
         
         if (storageError) {
@@ -97,7 +97,7 @@ const AdminExclusiveSourcesTab: React.FC<AdminExclusiveSourcesTabProps> = ({
   const getPublicUrl = async (path: string) => {
     try {
       const { data } = await supabase.storage
-        .from('middleeast24-uploads')
+        .from('exclusive-sources')
         .getPublicUrl(path);
       
       return data.publicUrl;
