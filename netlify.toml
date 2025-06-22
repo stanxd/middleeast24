@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build"
+  command = "npm run netlify-build"
   publish = "dist"
   # Ensure we're using a consistent Node.js version
   environment = { NODE_VERSION = "18" }
