@@ -12,6 +12,7 @@ import AdminContactsTab from './admin/components/AdminContactsTab';
 import AdminReportsTab from './admin/components/AdminReportsTab';
 import AdminMentorshipTab from './admin/components/AdminMentorshipTab';
 import AdminArticlesTab from './admin/components/AdminArticlesTab';
+import AdminExclusiveSourcesTab from './admin/components/AdminExclusiveSourcesTab';
 import { Article } from './admin/utils/adminUtils';
 import { useToast } from '@/hooks/use-toast';
 
@@ -83,6 +84,20 @@ const Admin = () => {
     }
   });
 
+  // Fetch exclusive source submissions
+  const { data: exclusiveSourceSubmissions, refetch: refetchExclusiveSourceSubmissions } = useQuery({
+    queryKey: ['exclusive-source-submissions'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('exclusive_source_submissions')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data;
+    }
+  });
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -118,14 +133,16 @@ const Admin = () => {
             investigativeReports={investigativeReports}
             mentorshipApplications={mentorshipApplications}
             articles={articles}
+            exclusiveSourceSubmissions={exclusiveSourceSubmissions}
           />
 
           <Tabs defaultValue="articles" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="articles">Articles</TabsTrigger>
               <TabsTrigger value="contacts">Contact Submissions</TabsTrigger>
               <TabsTrigger value="reports">Investigative Reports</TabsTrigger>
               <TabsTrigger value="mentorship">Mentorship Applications</TabsTrigger>
+              <TabsTrigger value="exclusive-sources">Exclusive Sources</TabsTrigger>
             </TabsList>
             
             <TabsContent value="articles">
@@ -153,6 +170,13 @@ const Admin = () => {
               <AdminMentorshipTab 
                 mentorshipApplications={mentorshipApplications}
                 refetchApplications={refetchApplications}
+              />
+            </TabsContent>
+            
+            <TabsContent value="exclusive-sources">
+              <AdminExclusiveSourcesTab 
+                exclusiveSourceSubmissions={exclusiveSourceSubmissions}
+                refetchSubmissions={refetchExclusiveSourceSubmissions}
               />
             </TabsContent>
           </Tabs>

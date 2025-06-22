@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { Heart, FileText, GraduationCap, ArrowRight, Clock } from 'lucide-react';
+import { Heart, FileText, GraduationCap, ArrowRight, Clock, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DonationModal from './DonationModal';
 import InvestigativeReportModal from './InvestigativeReportModal';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import ExclusiveSourceForm from './ExclusiveSourceForm';
 
 const ServicesSection = () => {
   const navigate = useNavigate();
   const [donationModalOpen, setDonationModalOpen] = useState(false);
   const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [exclusiveSourceModalOpen, setExclusiveSourceModalOpen] = useState(false);
 
   const services = [
     {
@@ -22,6 +25,19 @@ const ServicesSection = () => {
       iconColor: 'text-red-600',
       borderColor: 'border-red-100',
       action: () => setDonationModalOpen(true)
+    },
+    {
+      id: 4,
+      title: 'Exclusive Sources',
+      description: 'Submit anonymous news tips securely. We prioritize your privacy - no tracking, no cookies, complete anonymity for whistleblowers and sources.',
+      icon: Shield,
+      buttonText: 'Submit Anonymously',
+      color: 'bg-gradient-to-br from-slate-700 via-[#0003ff] to-slate-900 hover:from-slate-800 hover:via-[#0003ff] hover:to-slate-950',
+      shadowColor: 'shadow-purple-200 hover:shadow-purple-300',
+      iconBg: 'bg-purple-50',
+      iconColor: 'text-purple-600',
+      borderColor: 'border-purple-100',
+      action: () => setExclusiveSourceModalOpen(true)
     },
     {
       id: 2,
@@ -130,6 +146,19 @@ const ServicesSection = () => {
 
       <DonationModal isOpen={donationModalOpen} onClose={() => setDonationModalOpen(false)} type="donation" />
       <InvestigativeReportModal isOpen={reportModalOpen} onClose={() => setReportModalOpen(false)} />
+      
+<Dialog open={exclusiveSourceModalOpen} onOpenChange={setExclusiveSourceModalOpen}>
+        <DialogContent 
+          className="max-w-2xl p-0 border-0 bg-transparent shadow-2xl max-h-[90vh] overflow-y-auto"
+          aria-describedby="anonymous-tip-description"
+        >
+          <DialogTitle className="sr-only">Submit Anonymous Tip</DialogTitle>
+          <div id="anonymous-tip-description" className="sr-only">
+            Submit anonymous tip form for sharing confidential information securely and anonymously.
+          </div>
+          <ExclusiveSourceForm />
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };

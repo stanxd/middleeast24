@@ -1,7 +1,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
 
-export type TableName = 'contact_submissions' | 'investigative_reports' | 'mentorship_applications' | 'articles';
+export type TableName = 'contact_submissions' | 'investigative_reports' | 'mentorship_applications' | 'articles' | 'exclusive_source_submissions';
 
 export const updateStatus = async (table: TableName, id: string, status: string) => {
   const { error } = await supabase
