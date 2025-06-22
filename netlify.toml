@@ -1,6 +1,20 @@
 [build]
   command = "npm run build"
   publish = "dist"
+  # Ensure we're using a consistent Node.js version
+  environment = { NODE_VERSION = "18" }
+
+# Custom build command to handle dependency conflicts
+[build.environment]
+  NPM_FLAGS = "--no-optional"
+
+# Pre-install command to remove bun.lockb to avoid conflicts
+[[plugins]]
+  package = "@netlify/plugin-functions-core"
+
+[[plugins.inputs]]
+  # Remove bun.lockb before installing dependencies
+  pre_install_command = "rm -f bun.lockb"
 
 # Handle SPA routing
 [[redirects]]
