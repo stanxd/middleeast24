@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ArticleGrid from './ArticleGrid';
 import TabHeader from './TabHeader';
-import { useRSSFeed } from '../hooks/useRSSFeed';
+import { useRSSArticles } from '../hooks/useRSSArticles';
 import { useSentimentAnalysis } from '../hooks/useSentimentAnalysis';
 import { sampleArticles } from '../data/sampleData';
 import { Article } from '../types/Article';
@@ -11,9 +11,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 
 const CategoryTabs = () => {
-  const { articles: rssArticles, loading: rssLoading, error: rssError } = useRSSFeed('https://english.alarabiya.net/feed/rss2/en/News.xml');
-  const { analyzeSentiment, isModelReady } = useSentimentAnalysis();
   const [sentimentFilter, setSentimentFilter] = useState('all');
+  const { articles: rssArticles, loading: rssLoading, error: rssError } = useRSSArticles(sentimentFilter);
+  const { isModelReady } = useSentimentAnalysis();
   const [processedArticles, setProcessedArticles] = useState<Article[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
@@ -45,123 +45,36 @@ const CategoryTabs = () => {
     }
   });
 
-  // Process articles with sentiment analysis
+  // Combine published articles with RSS articles
   useEffect(() => {
-    const processArticlesWithSentiment = async () => {
-      // Combine published articles with RSS articles, prioritizing published articles
-      const allArticles = [
-        ...(publishedArticles || []),
-        ...rssArticles.slice(0, Math.max(0, 15 - (publishedArticles?.length || 0)))
-      ];
+    // Combine published articles with RSS articles, prioritizing published articles
+    const allArticles = [
+      ...(publishedArticles || []),
+      ...rssArticles.slice(0, Math.max(0, 15 - (publishedArticles?.length || 0)))
+    ];
 
-      // Always set the combined articles first
-      if (allArticles.length > 0) {
-        setProcessedArticles(allArticles);
-      }
-
-      if (!isModelReady || allArticles.length === 0) {
-        return;
-      }
-
-      setIsAnalyzing(true);
-      console.log('Starting sentiment analysis for articles...');
-
-      try {
-        const articlesWithSentiment = await Promise.all(
-          allArticles.slice(0, 15).map(async (article) => {
-            try {
-              const sentimentResult = await analyzeSentiment(article.title + ' ' + article.excerpt);
-              if (sentimentResult) {
-                return {
-                  ...article,
-                  sentiment: sentimentResult.label,
-                  sentimentConfidence: sentimentResult.confidence
-                };
-              }
-              return article;
-            } catch (error) {
-              console.error('Error analyzing sentiment for article:', article.id, error);
-              return article;
-            }
-          })
-        );
-
-        setProcessedArticles(articlesWithSentiment);
-        console.log('Sentiment analysis completed');
-      } catch (error) {
-        console.error('Error in sentiment analysis process:', error);
-      } finally {
-        setIsAnalyzing(false);
-      }
-    };
-
-    processArticlesWithSentiment();
-  }, [publishedArticles, rssArticles, isModelReady, analyzeSentiment]);
-
-  // Process sample articles with sentiment analysis (for Investigations and Exclusive tabs)
-  useEffect(() => {
-    const processSampleArticlesWithSentiment = async () => {
-      if (!isModelReady) {
-        return;
-      }
-
-      setIsAnalyzing(true);
-      console.log('Starting sentiment analysis for sample articles...');
-
-      try {
-        // Apply sentiment analysis to sample articles
-        const sampleWithSentiment = await Promise.all(
-          sampleArticles.map(async (article) => {
-            try {
-              const sentimentResult = await analyzeSentiment(article.title + ' ' + article.excerpt);
-              if (sentimentResult) {
-                return {
-                  ...article,
-                  sentiment: sentimentResult.label,
-                  sentimentConfidence: sentimentResult.confidence
-                };
-              }
-              return article;
-            } catch (error) {
-              console.error('Error analyzing sentiment for sample article:', article.id, error);
-              return article;
-            }
-          })
-        );
-
-        // Update the sample articles with sentiment
-        sampleArticles.forEach((article, index) => {
-          if (sampleWithSentiment[index].sentiment) {
-            article.sentiment = sampleWithSentiment[index].sentiment;
-            article.sentimentConfidence = sampleWithSentiment[index].sentimentConfidence;
-          }
-        });
-        
-        console.log('Sample articles sentiment analysis completed');
-      } catch (error) {
-        console.error('Error in sample articles sentiment analysis process:', error);
-      } finally {
-        setIsAnalyzing(false);
-      }
-    };
-
-    processSampleArticlesWithSentiment();
-  }, [isModelReady, analyzeSentiment]);
-
-  // Filter articles by sentiment
-  const getFilteredArticles = (articles: Article[]) => {
-    if (sentimentFilter === 'all') {
-      return articles;
+    // Set the combined articles
+    if (allArticles.length > 0) {
+      setProcessedArticles(allArticles);
     }
-    return articles.filter(article => article.sentiment === sentimentFilter);
-  };
+  }, [publishedArticles, rssArticles]);
+
+  // Set analyzing state based on loading state
+  useEffect(() => {
+    setIsAnalyzing(rssLoading);
+  }, [rssLoading]);
 
   // For News tab, use processed articles (published + RSS combined)
-  const newsArticles = getFilteredArticles(processedArticles.slice(0, 15));
+  const newsArticles = processedArticles.slice(0, 15);
   
   // For other tabs, use filtered sample articles
-  const investigationsArticles = getFilteredArticles(sampleArticles.filter(article => article.category === 'Investigations'));
-  const exclusiveArticles = getFilteredArticles(sampleArticles.filter(article => article.category === 'Exclusive Sources'));
+  const investigationsArticles = sampleArticles
+    .filter(article => article.category === 'Investigations')
+    .filter(article => sentimentFilter === 'all' || article.sentiment === sentimentFilter);
+    
+  const exclusiveArticles = sampleArticles
+    .filter(article => article.category === 'Exclusive Sources')
+    .filter(article => sentimentFilter === 'all' || article.sentiment === sentimentFilter);
 
   return (
     <div className="w-full">

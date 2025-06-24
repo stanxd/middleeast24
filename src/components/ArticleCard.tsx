@@ -1,10 +1,11 @@
 
 import React, { useState } from 'react';
-import { Clock, User, Share, DollarSign } from 'lucide-react';
+import { Clock, User, DollarSign } from 'lucide-react';
 import { Article } from '../types/Article';
 import DonationModal from './DonationModal';
 import ArticleModal from './ArticleModal';
 import SentimentBadge from './SentimentBadge';
+import ShareButton from './ShareButton';
 
 interface ArticleCardProps {
   article: Article;
@@ -91,9 +92,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, showSponsorButton = 
               </div>
             </div>
             
-            <button className="text-gray-400 hover:text-navy-900 transition-colors">
-              <Share className="h-4 w-4" />
-            </button>
+            <ShareButton article={article} />
           </div>
         </div>
       </article>

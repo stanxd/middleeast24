@@ -9,6 +9,57 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      rss_articles: {
+        Row: {
+          id: string
+          title: string
+          content: string
+          excerpt: string
+          author: string
+          publish_date: string
+          source_url: string
+          image_url: string | null
+          category: string
+          tags: string[] | null
+          sentiment_label: string | null
+          sentiment_confidence: number | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          content: string
+          excerpt: string
+          author: string
+          publish_date: string
+          source_url: string
+          image_url?: string | null
+          category: string
+          tags?: string[] | null
+          sentiment_label?: string | null
+          sentiment_confidence?: number | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          content?: string
+          excerpt?: string
+          author?: string
+          publish_date?: string
+          source_url?: string
+          image_url?: string | null
+          category?: string
+          tags?: string[] | null
+          sentiment_label?: string | null
+          sentiment_confidence?: number | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       exclusive_source_submissions: {
         Row: {
           created_at: string

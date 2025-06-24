@@ -1,8 +1,9 @@
 
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
-import { X, ExternalLink, Clock, User } from 'lucide-react';
+import { ExternalLink, Clock, User } from 'lucide-react';
 import { Article } from '../types/Article';
+import ShareButton from './ShareButton';
 
 interface ArticleModalProps {
   article: Article | null;
@@ -100,8 +101,25 @@ const ArticleModal: React.FC<ArticleModalProps> = ({ article, isOpen, onClose })
           </div>
 
           {/* Call to Action */}
-          {hasExternalLink && (
-            <div className="border-t pt-4">
+          <div className="border-t pt-4">
+            <div className="flex items-center justify-between mb-4">
+              <ShareButton 
+                article={article} 
+                className="flex items-center space-x-2 text-navy-900 hover:text-navy-700"
+              />
+              
+              {hasExternalLink && (
+                <button
+                  onClick={handleExternalLink}
+                  className="flex items-center space-x-1 text-blue-600 hover:text-blue-800"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  <span>Read Original</span>
+                </button>
+              )}
+            </div>
+            
+            {hasExternalLink && (
               <button
                 onClick={handleExternalLink}
                 className="w-full bg-navy-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-navy-800 transition-colors flex items-center justify-center space-x-2"
@@ -109,8 +127,8 @@ const ArticleModal: React.FC<ArticleModalProps> = ({ article, isOpen, onClose })
                 <ExternalLink className="h-4 w-4" />
                 <span>Read Full Article on Original Source</span>
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>

@@ -13,6 +13,7 @@ import AdminReportsTab from './admin/components/AdminReportsTab';
 import AdminMentorshipTab from './admin/components/AdminMentorshipTab';
 import AdminArticlesTab from './admin/components/AdminArticlesTab';
 import AdminExclusiveSourcesTab from './admin/components/AdminExclusiveSourcesTab';
+import AdminRSSSourcesTab from './admin/components/AdminRSSSourcesTab';
 import { Article } from './admin/utils/adminUtils';
 import { useToast } from '@/hooks/use-toast';
 
@@ -137,8 +138,9 @@ const Admin = () => {
           />
 
           <Tabs defaultValue="articles" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="articles">Articles</TabsTrigger>
+              <TabsTrigger value="rss-sources">RSS Sources</TabsTrigger>
               <TabsTrigger value="contacts">Contact Submissions</TabsTrigger>
               <TabsTrigger value="reports">Investigative Reports</TabsTrigger>
               <TabsTrigger value="mentorship">Mentorship Applications</TabsTrigger>
@@ -150,6 +152,10 @@ const Admin = () => {
                 articles={articles}
                 refetchArticles={refetchArticles}
               />
+            </TabsContent>
+            
+            <TabsContent value="rss-sources">
+              <AdminRSSSourcesTab />
             </TabsContent>
             
             <TabsContent value="contacts">

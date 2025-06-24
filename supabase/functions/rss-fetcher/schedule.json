@@ -1,0 +1,4 @@
+{
+  "schedule": "*/15 * * * *",
+  "description": "Fetch RSS feeds and analyze sentiment every 15 minutes"
+}

@@ -1,40 +1,39 @@
-
 import React from 'react';
+import { Button } from '@/components/ui/button';
+import { SentimentType } from '@/hooks/useSentimentAnalysis';
 
 interface SentimentFilterProps {
-  selectedSentiment: string;
-  onSentimentChange: (sentiment: string) => void;
+  currentFilter: string;
+  onChange: (filter: string) => void;
 }
 
 const SentimentFilter: React.FC<SentimentFilterProps> = ({ 
-  selectedSentiment, 
-  onSentimentChange 
+  currentFilter, 
+  onChange 
 }) => {
-  const sentimentOptions = [
-    { value: 'all', color: 'bg-gray-400', hoverColor: 'hover:bg-gray-500' },
-    { value: 'positive', color: 'bg-green-500', hoverColor: 'hover:bg-green-600' },
-    { value: 'neutral', color: 'bg-blue-500', hoverColor: 'hover:bg-blue-600' },
-    { value: 'negative', color: 'bg-red-500', hoverColor: 'hover:bg-red-600' }
+  const filters: { value: string; label: string; icon: string; color: string }[] = [
+    { value: 'all', label: 'All', icon: '🔍', color: 'bg-gray-100 hover:bg-gray-200 text-gray-800' },
+    { value: 'positive', label: 'Positive', icon: '😊', color: 'bg-green-100 hover:bg-green-200 text-green-800' },
+    { value: 'neutral', label: 'Neutral', icon: '😐', color: 'bg-gray-100 hover:bg-gray-200 text-gray-800' },
+    { value: 'negative', label: 'Negative', icon: '😟', color: 'bg-red-100 hover:bg-red-200 text-red-800' }
   ];
 
   return (
-    <div className="flex items-center space-x-4">
-      <span className="text-sm font-medium text-gray-700">Filter by Sentiment:</span>
-      <div className="flex items-center space-x-3">
-        {sentimentOptions.map((option) => (
-          <button
-            key={option.value}
-            onClick={() => onSentimentChange(option.value)}
-            className={`
-              w-8 h-1 rounded-full transition-all duration-200 cursor-pointer
-              ${selectedSentiment === option.value 
-                ? `${option.color} shadow-md scale-110` 
-                : `${option.color} opacity-50 hover:opacity-100 hover:scale-105`
-              }
-            `}
-          />
-        ))}
-      </div>
+    <div className="flex flex-wrap gap-2">
+      {filters.map((filter) => (
+        <Button
+          key={filter.value}
+          variant="outline"
+          size="sm"
+          className={`${filter.color} border rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+            currentFilter === filter.value ? 'ring-2 ring-offset-1 ring-blue-400' : ''
+          }`}
+          onClick={() => onChange(filter.value)}
+        >
+          <span className="mr-1">{filter.icon}</span>
+          {filter.label}
+        </Button>
+      ))}
     </div>
   );
 };

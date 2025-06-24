@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, FileText, GraduationCap, ArrowRight, Clock, Shield } from 'lucide-react';
+import { Heart, FileText, GraduationCap, ArrowRight, Clock, UserX, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DonationModal from './DonationModal';
 import InvestigativeReportModal from './InvestigativeReportModal';
@@ -14,29 +14,16 @@ const ServicesSection = () => {
 
   const services = [
     {
-      id: 1,
-      title: 'Support Independent Journalism',
-      description: 'Your donation helps us maintain editorial independence and continue our mission to deliver unbiased news and investigations that matter.',
-      icon: Heart,
-      buttonText: 'Donate Now',
-      color: 'bg-gradient-to-br from-slate-700 via-[#0003ff] to-slate-900 hover:from-slate-800 hover:via-[#0003ff] hover:to-slate-950',
-      shadowColor: 'shadow-slate-200 hover:shadow-slate-300',
-      iconBg: 'bg-red-50',
-      iconColor: 'text-red-600',
-      borderColor: 'border-red-100',
-      action: () => setDonationModalOpen(true)
-    },
-    {
       id: 4,
       title: 'Exclusive Sources',
       description: 'Submit anonymous news tips securely. We prioritize your privacy - no tracking, no cookies, complete anonymity for whistleblowers and sources.',
-      icon: Shield,
+      icon: EyeOff,
       buttonText: 'Submit Anonymously',
-      color: 'bg-gradient-to-br from-slate-700 via-[#0003ff] to-slate-900 hover:from-slate-800 hover:via-[#0003ff] hover:to-slate-950',
-      shadowColor: 'shadow-purple-200 hover:shadow-purple-300',
-      iconBg: 'bg-purple-50',
-      iconColor: 'text-purple-600',
-      borderColor: 'border-purple-100',
+      color: 'bg-gradient-to-br from-gray-800 via-gray-900 to-black hover:from-black hover:via-gray-900 hover:to-gray-800',
+      shadowColor: 'shadow-gray-200 hover:shadow-gray-300',
+      iconBg: 'bg-gray-900',
+      iconColor: 'text-gray-100',
+      borderColor: 'border-gray-800',
       action: () => setExclusiveSourceModalOpen(true)
     },
     {
@@ -45,7 +32,7 @@ const ServicesSection = () => {
       description: 'Submit confidential tips, documents, or leads for investigative stories. Help us uncover the truth that needs to be told.',
       icon: FileText,
       buttonText: 'Submit Report',
-      color: 'bg-gradient-to-br from-slate-700 via-[#0003ff] to-slate-900 hover:from-slate-800 hover:via-[#0003ff] hover:to-slate-950',
+      color: 'bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700 hover:from-blue-700 hover:via-blue-600 hover:to-blue-800',
       shadowColor: 'shadow-blue-200 hover:shadow-blue-300',
       iconBg: 'bg-blue-50',
       iconColor: 'text-blue-600',
@@ -62,7 +49,7 @@ const ServicesSection = () => {
       description: "Join our comprehensive mentorship program to learn from experienced journalists and develop your reporting skills in today's media landscape.",
       icon: GraduationCap,
       buttonText: 'Apply Now',
-      color: 'bg-gradient-to-br from-slate-700 via-[#0003ff] to-slate-900 hover:from-slate-800 hover:via-[#0003ff] hover:to-slate-950',
+      color: 'bg-gradient-to-br from-green-600 via-green-500 to-green-700 hover:from-green-700 hover:via-green-600 hover:to-green-800',
       shadowColor: 'shadow-green-200 hover:shadow-green-300',
       iconBg: 'bg-green-50',
       iconColor: 'text-green-600',
@@ -107,12 +94,22 @@ const ServicesSection = () => {
                 
                 <div className="space-y-4">
                   <button onClick={service.action} className={`w-full ${service.color} text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300 transform group-hover:scale-105 inline-flex items-center justify-center space-x-3 text-base shadow-xl hover:shadow-2xl`}>
+                    <div className={`flex items-center justify-center h-6 w-6 ${
+                      service.id === 1 ? 'bg-red-500/50' : 
+                      service.id === 2 ? 'bg-blue-500/50' : 
+                      service.id === 3 ? 'bg-green-500/50' : 
+                      'bg-gray-700/80'
+                    } rounded-full mr-2 backdrop-blur-sm`}>
+                      <IconComponent className="h-4 w-4 text-white" />
+                    </div>
                     <span>{service.buttonText}</span>
                     <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
                   </button>
 
                   {service.hasSecondaryButton && <button disabled className="w-full bg-gray-100 text-gray-400 px-8 py-4 rounded-2xl font-semibold cursor-not-allowed inline-flex items-center justify-center space-x-3 text-base relative">
-                      <SecondaryIconComponent className="h-5 w-5" />
+                      <div className="flex items-center justify-center h-6 w-6 bg-gray-300/50 rounded-full mr-2 backdrop-blur-sm">
+                        <SecondaryIconComponent className="h-4 w-4 text-gray-500" />
+                      </div>
                       <span>{service.secondaryButtonText}</span>
                       <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
                         {service.secondaryButtonLabel}
@@ -135,10 +132,23 @@ const ServicesSection = () => {
               <p className="text-blue-100 mb-8 sm:mb-10 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
                 Join our community of truth-seekers, whistleblowers, and changemakers. Together, we're shaping the future of independent journalism.
               </p>
-              <button onClick={() => navigate('/contact')} className="bg-white/90 backdrop-blur-sm text-gray-900 px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-bold hover:bg-white transition-all duration-300 transform hover:scale-105 inline-flex items-center space-x-3 text-base sm:text-lg shadow-2xl">
-                <span>Contact Us Today</span>
-                <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6" />
-              </button>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onClick={() => navigate('/contact')} className="bg-white/90 backdrop-blur-sm text-gray-900 px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-bold hover:bg-white transition-all duration-300 transform hover:scale-105 inline-flex items-center justify-center space-x-3 text-base sm:text-lg shadow-2xl">
+                  <div className="flex items-center justify-center h-6 w-6 sm:h-7 sm:w-7 bg-yellow-400/50 rounded-full mr-2 backdrop-blur-sm">
+                    <span className="text-sm sm:text-base">✨</span>
+                  </div>
+                  <span>Contact Us Today</span>
+                  <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 group-hover:translate-x-1 transition-transform duration-300" />
+                </button>
+                
+                <button onClick={() => setDonationModalOpen(true)} className="bg-gradient-to-br from-red-600 via-red-500 to-red-700 hover:from-red-700 hover:via-red-600 hover:to-red-800 text-white px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-bold transition-all duration-300 transform hover:scale-105 inline-flex items-center justify-center space-x-3 text-base sm:text-lg shadow-2xl">
+                  <div className="flex items-center justify-center h-6 w-6 sm:h-7 sm:w-7 bg-red-500/50 rounded-full mr-2 backdrop-blur-sm">
+                    <Heart className="h-4 w-4 text-white" />
+                  </div>
+                  <span>Support us with Crypto</span>
+                  <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 group-hover:translate-x-1 transition-transform duration-300" />
+                </button>
+              </div>
             </div>
           </div>
         </div>

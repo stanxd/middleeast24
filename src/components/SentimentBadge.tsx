@@ -1,57 +1,69 @@
-
 import React from 'react';
-import { Badge } from './ui/badge';
+import { Badge } from '@/components/ui/badge';
+import { SentimentType } from '@/hooks/useSentimentAnalysis';
 
 interface SentimentBadgeProps {
-  sentiment: 'positive' | 'negative' | 'neutral';
+  sentiment?: SentimentType;
   confidence?: number;
-  size?: 'sm' | 'md';
+  size?: 'sm' | 'md' | 'lg';
 }
 
 const SentimentBadge: React.FC<SentimentBadgeProps> = ({ 
   sentiment, 
-  confidence, 
-  size = 'sm' 
+  confidence = 0, 
+  size = 'md' 
 }) => {
-  const getSentimentConfig = () => {
+  if (!sentiment) return null;
+
+  const getColorClass = () => {
     switch (sentiment) {
       case 'positive':
-        return {
-          label: 'Positive',
-          className: 'bg-green-100 text-green-800 border-green-200',
-          emoji: '🟢'
-        };
+        return 'bg-green-100 text-green-800 border-green-200 hover:bg-green-200';
       case 'negative':
-        return {
-          label: 'Negative',
-          className: 'bg-red-100 text-red-800 border-red-200',
-          emoji: '🔴'
-        };
+        return 'bg-red-100 text-red-800 border-red-200 hover:bg-red-200';
       case 'neutral':
-        return {
-          label: 'Neutral',
-          className: 'bg-blue-100 text-blue-800 border-blue-200',
-          emoji: '🔵'
-        };
       default:
-        return {
-          label: 'Unknown',
-          className: 'bg-gray-100 text-gray-800 border-gray-200',
-          emoji: '⚪'
-        };
+        return 'bg-gray-100 text-gray-800 border-gray-200 hover:bg-gray-200';
     }
   };
 
-  const config = getSentimentConfig();
-  const sizeClass = size === 'sm' ? 'text-xs px-2 py-0.5' : 'text-sm px-3 py-1';
+  const getIcon = () => {
+    switch (sentiment) {
+      case 'positive':
+        return '😊';
+      case 'negative':
+        return '😟';
+      case 'neutral':
+      default:
+        return '😐';
+    }
+  };
+
+  const getSizeClass = () => {
+    switch (size) {
+      case 'sm':
+        return 'text-xs py-0.5 px-1.5';
+      case 'lg':
+        return 'text-sm py-1 px-3';
+      case 'md':
+      default:
+        return 'text-xs py-0.5 px-2';
+    }
+  };
+
+  // Format confidence as percentage
+  const confidencePercent = confidence ? Math.round(confidence * 100) : 0;
 
   return (
     <Badge 
-      className={`${config.className} ${sizeClass} font-medium border`}
-      title={confidence ? `Confidence: ${(confidence * 100).toFixed(1)}%` : undefined}
+      variant="outline" 
+      className={`${getColorClass()} ${getSizeClass()} font-medium border rounded-full transition-colors`}
     >
-      <span className="mr-1">{config.emoji}</span>
-      {config.label}
+      <span className="mr-1">{getIcon()}</span>
+      <span className="capitalize">{sentiment}</span>
+      {confidence > 0 && (
+        <span className="ml-1 opacity-75 text-[0.7em]">({confidencePercent}%)</span>
+      )}
     </Badge>
   );
 };

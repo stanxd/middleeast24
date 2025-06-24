@@ -55,8 +55,8 @@ const TabHeader: React.FC<TabHeaderProps> = ({
         
         <div className="flex justify-start">
           <SentimentFilter 
-            selectedSentiment={sentimentFilter}
-            onSentimentChange={onSentimentChange}
+            currentFilter={sentimentFilter}
+            onChange={onSentimentChange}
           />
         </div>
       </div>
