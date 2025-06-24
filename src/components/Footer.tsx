@@ -40,9 +40,9 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-semibold">Categories</h4>
             <ul className="space-y-2 text-sm text-gray-400">
-              <li><a href="#" className="hover:text-white transition-colors">News</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Investigations</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Exclusive Sources</a></li>
+              <li><Link to="/?tab=news" className="hover:text-white transition-colors">News</Link></li>
+              <li><Link to="/?tab=investigations" className="hover:text-white transition-colors">Investigations</Link></li>
+              <li><Link to="/?tab=exclusive" className="hover:text-white transition-colors">Exclusive Sources</Link></li>
             </ul>
           </div>
 
@@ -50,8 +50,8 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-semibold">Contact</h4>
             <div className="space-y-2 text-sm text-gray-400">
-              <p>Email: news@middleeast24.com</p>
-              <p>Phone: +1 (555) 123-4567</p>
+              <p>Email: news@middleeast24.org</p>
+              <p>Phone: +1 (000) 123-4567</p>
               <p>Address: Middle East News Center</p>
             </div>
           </div>
@@ -62,9 +62,9 @@ const Footer = () => {
             © 2024 MiddleEast24. All rights reserved.
           </p>
           <div className="flex space-x-6 text-sm text-gray-400 mt-4 md:mt-0">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-            <a href="mailto:s707tan@gmail.com" className="hover:text-white transition-colors">Contact Us</a>
+            <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link to="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link>
+            <a href="mailto:news@middleeast24.org" className="hover:text-white transition-colors">Contact Us</a>
           </div>
         </div>
       </div>

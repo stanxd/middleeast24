@@ -9,13 +9,29 @@ import { sampleArticles } from '../data/sampleData';
 import { Article } from '../types/Article';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
+import { useLocation } from 'react-router-dom';
 
 const CategoryTabs = () => {
+  const location = useLocation();
   const [sentimentFilter, setSentimentFilter] = useState('all');
   const { articles: rssArticles, loading: rssLoading, error: rssError } = useRSSArticles(sentimentFilter);
   const { isModelReady } = useSentimentAnalysis();
   const [processedArticles, setProcessedArticles] = useState<Article[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  
+  // Get the active tab from URL parameters
+  const getActiveTabFromURL = () => {
+    const searchParams = new URLSearchParams(location.search);
+    const tab = searchParams.get('tab');
+    return tab === 'news' || tab === 'investigations' || tab === 'exclusive' ? tab : 'news';
+  };
+  
+  const [activeTab, setActiveTab] = useState(getActiveTabFromURL());
+  
+  // Update active tab when URL changes
+  useEffect(() => {
+    setActiveTab(getActiveTabFromURL());
+  }, [location.search]);
 
   // Fetch published articles from database
   const { data: publishedArticles, isLoading: articlesLoading } = useQuery({
@@ -78,7 +94,7 @@ const CategoryTabs = () => {
 
   return (
     <div className="w-full">
-      <Tabs defaultValue="news" className="w-full">
+      <Tabs defaultValue={activeTab} value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="sticky top-0 bg-white/80 backdrop-blur-sm z-10 pb-2 mb-6 sm:mb-8">
           <TabsList className="grid w-full grid-cols-3 h-auto bg-gradient-to-r from-navy-50 to-blue-50 border border-navy-200 shadow-sm rounded-xl p-1">
             <TabsTrigger 

@@ -38,15 +38,20 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, showSponsorButton = 
             alt={article.title}
             className="w-full h-48 object-cover"
           />
-          <div className="absolute top-3 left-3 flex items-center space-x-2">
+          <div className="absolute top-3 left-3">
             <span className={`${getCategoryColor(article.category)} text-white px-2 py-1 rounded text-xs font-medium`}>
               {article.category}
             </span>
+          </div>
+          <div className="absolute bottom-0 left-0 right-0 flex items-center">
             {article.sentiment && (
-              <SentimentBadge 
-                sentiment={article.sentiment} 
-                confidence={article.sentimentConfidence}
-              />
+              <div className="w-full">
+                <SentimentBadge 
+                  sentiment={article.sentiment} 
+                  confidence={article.sentimentConfidence}
+                  width="full"
+                />
+              </div>
             )}
           </div>
           <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 p-1 rounded">
