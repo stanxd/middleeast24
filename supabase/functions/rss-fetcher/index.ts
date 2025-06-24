@@ -6,6 +6,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.50.0";
 
 // Define the RSS source interface
 interface RSSSource {
+  id?: string;
   name: string;
   url: string;
   category: 'News' | 'Investigations' | 'Exclusive Sources';
@@ -29,30 +30,6 @@ interface RSSItem {
 // Define the sentiment type
 type SentimentType = 'positive' | 'negative' | 'neutral';
 
-// Default RSS sources
-const defaultRSSSources: RSSSource[] = [
-  {
-    name: 'Al Jazeera',
-    url: 'https://www.aljazeera.com/xml/rss/all.xml',
-    category: 'News'
-  },
-  {
-    name: 'BBC Middle East',
-    url: 'https://feeds.bbci.co.uk/news/world/middle_east/rss.xml',
-    category: 'News'
-  },
-  {
-    name: 'Reuters Middle East',
-    url: 'https://www.reutersagency.com/feed/?taxonomy=best-regions&post_type=best&taxonomy=best-regions&post_type=best&best-regions=middle-east',
-    category: 'News'
-  },
-  {
-    name: 'Al Arabiya',
-    url: 'https://english.alarabiya.net/tools/rss',
-    category: 'News'
-  }
-];
-
 serve(async (req) => {
   try {
     // Create a Supabase client with the Auth context of the function
@@ -69,8 +46,34 @@ serve(async (req) => {
       }
     );
 
+    // Fetch RSS sources from the database
+    const { data: sources, error: sourcesError } = await supabaseClient
+      .from('rss_sources')
+      .select('*')
+      .order('name');
+
+    if (sourcesError) {
+      throw new Error(`Error fetching RSS sources: ${sourcesError.message}`);
+    }
+
+    if (!sources || sources.length === 0) {
+      console.log('No RSS sources found in the database');
+      return new Response(
+        JSON.stringify({ success: true, message: 'No RSS sources found in the database' }),
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Convert database sources to RSSSource type
+    const rssSources: RSSSource[] = sources.map(source => ({
+      id: source.id,
+      name: source.name,
+      url: source.url,
+      category: source.category as 'News' | 'Investigations' | 'Exclusive Sources'
+    }));
+
     // Fetch all RSS sources
-    for (const source of defaultRSSSources) {
+    for (const source of rssSources) {
       try {
         console.log(`Fetching RSS feed from ${source.name}: ${source.url}`);
         await fetchAndProcessFeed(source, supabaseClient);
@@ -97,6 +100,8 @@ serve(async (req) => {
  */
 async function fetchAndProcessFeed(source: RSSSource, supabaseClient: any): Promise<void> {
   try {
+    console.log(`Fetching RSS feed from ${source.name}: ${source.url}`);
+    
     // Try multiple CORS proxies in order
     const proxies = [
       `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(source.url)}`,
@@ -111,14 +116,24 @@ async function fetchAndProcessFeed(source: RSSSource, supabaseClient: any): Prom
     // Try rss2json first (most reliable for RSS)
     try {
       console.log('Trying rss2json proxy...');
-      response = await fetch(proxies[0]);
+      response = await fetch(proxies[0], { 
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
       if (response.ok) {
         data = await response.json();
-        if (data.status === 'ok' && data.items) {
+        console.log('rss2json response:', data);
+        
+        if (data.status === 'ok' && data.items && data.items.length > 0) {
           console.log('rss2json success, found', data.items.length, 'items');
           items = data.items;
           success = true;
+        } else {
+          console.log('rss2json returned no items or had an error status');
         }
+      } else {
+        console.log('rss2json response not OK:', response.status);
       }
     } catch (err) {
       console.log('rss2json failed:', err);
@@ -128,52 +143,109 @@ async function fetchAndProcessFeed(source: RSSSource, supabaseClient: any): Prom
     if (!success) {
       try {
         console.log('Trying allorigins proxy...');
-        response = await fetch(proxies[1]);
+        response = await fetch(proxies[1], {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
         if (response.ok) {
           data = await response.json();
+          console.log('allorigins response received');
           
-          // Parse XML in Deno environment
-          const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(data.contents, 'text/xml');
-          
-          const xmlItems = Array.from(xmlDoc.querySelectorAll('item'));
-          console.log('allorigins success, found', xmlItems.length, 'items');
-          
-          if (xmlItems.length > 0) {
-            items = xmlItems.map((item: Element) => {
-              const title = item.querySelector('title')?.textContent || 'Untitled';
-              const description = item.querySelector('description')?.textContent || '';
-              const link = item.querySelector('link')?.textContent || '';
-              const pubDate = item.querySelector('pubDate')?.textContent || '';
-              const author = item.querySelector('author')?.textContent || '';
-              
-              // Try to extract image from media:content or enclosure
-              const mediaContent = item.querySelector('media\\:content');
-              const enclosure = item.querySelector('enclosure');
-              
-              let thumbnail = undefined;
-              let enclosureObj = undefined;
-              
-              if (mediaContent) {
-                thumbnail = mediaContent.getAttribute('url') || undefined;
-              } else if (enclosure) {
-                enclosureObj = {
-                  url: enclosure.getAttribute('url') || undefined
-                };
-              }
+          if (data.contents) {
+            // Parse XML in Deno environment
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(data.contents, 'text/xml');
+            
+            // Try to find items - different RSS feeds might use different structures
+            let xmlItems = Array.from(xmlDoc.querySelectorAll('item'));
+            
+            // If no items found, try entry (Atom format)
+            if (xmlItems.length === 0) {
+              xmlItems = Array.from(xmlDoc.querySelectorAll('entry'));
+            }
+            
+            console.log('allorigins success, found', xmlItems.length, 'items');
+            
+            if (xmlItems.length > 0) {
+              items = xmlItems.map((item: Element) => {
+                // Extract basic fields with fallbacks
+                const title = item.querySelector('title')?.textContent || 'Untitled';
+                
+                // For description, try multiple possible tags
+                let description = '';
+                const descriptionEl = item.querySelector('description') || 
+                                     item.querySelector('content') ||
+                                     item.querySelector('summary');
+                if (descriptionEl) {
+                  description = descriptionEl.textContent || '';
+                }
+                
+                // For link, handle both direct text content and href attribute
+                let link = '';
+                const linkEl = item.querySelector('link');
+                if (linkEl) {
+                  link = linkEl.getAttribute('href') || linkEl.textContent || '';
+                }
+                
+                const pubDate = item.querySelector('pubDate')?.textContent || 
+                               item.querySelector('published')?.textContent || 
+                               item.querySelector('date')?.textContent || 
+                               new Date().toISOString();
+                               
+                const author = item.querySelector('author')?.textContent || 
+                              item.querySelector('creator')?.textContent || 
+                              source.name;
+                
+                // Try to extract image from various possible elements
+                let thumbnail = undefined;
+                let enclosureObj = undefined;
+                
+                // Try media:content with namespace
+                const mediaContent = item.querySelector('*[nodeName="media:content"]') || 
+                                    item.querySelector('media\\:content');
+                
+                // Try enclosure
+                const enclosure = item.querySelector('enclosure');
+                
+                // Try image tag
+                const image = item.querySelector('image') || 
+                             item.querySelector('thumbnail');
+                
+                if (mediaContent) {
+                  thumbnail = mediaContent.getAttribute('url') || undefined;
+                } else if (enclosure) {
+                  const type = enclosure.getAttribute('type') || '';
+                  if (type.startsWith('image/')) {
+                    thumbnail = enclosure.getAttribute('url') || undefined;
+                  } else {
+                    enclosureObj = {
+                      url: enclosure.getAttribute('url') || undefined
+                    };
+                  }
+                } else if (image) {
+                  thumbnail = image.getAttribute('url') || image.textContent || undefined;
+                }
 
-              return {
-                title,
-                description,
-                link,
-                pubDate,
-                author,
-                thumbnail,
-                enclosure: enclosureObj
-              };
-            });
-            success = true;
+                return {
+                  title,
+                  description,
+                  link,
+                  pubDate,
+                  author,
+                  thumbnail,
+                  enclosure: enclosureObj
+                };
+              });
+              success = true;
+            } else {
+              console.log('No items found in the XML document');
+            }
+          } else {
+            console.log('allorigins response missing contents property');
           }
+        } else {
+          console.log('allorigins response not OK:', response.status);
         }
       } catch (err) {
         console.log('allorigins failed:', err);

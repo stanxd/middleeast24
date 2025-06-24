@@ -1,4 +1,4 @@
-import { rssService } from '../services/RSSService';
+import { rssService } from '../services/RSSService.ts';
 
 /**
  * This script can be used to manually fetch RSS articles and analyze sentiment.

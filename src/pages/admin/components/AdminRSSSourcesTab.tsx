@@ -20,10 +20,20 @@ const AdminRSSSourcesTab: React.FC = () => {
 
   // Load sources on component mount
   useEffect(() => {
-    setSources(rssService.getSources());
+    const loadSources = async () => {
+      try {
+        const sources = await rssService.getSources();
+        setSources(sources);
+      } catch (error) {
+        console.error('Error loading RSS sources:', error);
+        toast.error('Failed to load RSS sources');
+      }
+    };
+    
+    loadSources();
   }, []);
 
-  const handleAddSource = () => {
+  const handleAddSource = async () => {
     // Validate inputs
     if (!newSource.name.trim() || !newSource.url.trim()) {
       toast.error('Please provide both name and URL for the RSS source');
@@ -38,28 +48,52 @@ const AdminRSSSourcesTab: React.FC = () => {
       return;
     }
 
-    // Add the new source
-    const updatedSources = [...sources, { ...newSource }];
-    setSources(updatedSources);
-    rssService.setSources(updatedSources);
-    
-    // Reset form
-    setNewSource({
-      name: '',
-      url: '',
-      category: 'News'
-    });
-    
-    toast.success(`Added RSS source: ${newSource.name}`);
+    setIsLoading(true);
+    try {
+      // Add the new source to the database
+      await rssService.addSource(newSource);
+      
+      // Refresh the sources list
+      const updatedSources = await rssService.getSources();
+      setSources(updatedSources);
+      
+      // Reset form
+      setNewSource({
+        name: '',
+        url: '',
+        category: 'News'
+      });
+      
+      toast.success(`Added RSS source: ${newSource.name}`);
+    } catch (error) {
+      console.error('Error adding RSS source:', error);
+      toast.error('Failed to add RSS source');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleRemoveSource = (index: number) => {
-    const updatedSources = [...sources];
-    const removedSource = updatedSources[index];
-    updatedSources.splice(index, 1);
-    setSources(updatedSources);
-    rssService.setSources(updatedSources);
-    toast.success(`Removed RSS source: ${removedSource.name}`);
+  const handleRemoveSource = async (index: number) => {
+    const sourceToRemove = sources[index];
+    setIsLoading(true);
+    
+    try {
+      // Create a new array without the removed source
+      const updatedSources = sources.filter((_, i) => i !== index);
+      
+      // Update the database
+      await rssService.setSources(updatedSources);
+      
+      // Update the local state
+      setSources(updatedSources);
+      
+      toast.success(`Removed RSS source: ${sourceToRemove.name}`);
+    } catch (error) {
+      console.error('Error removing RSS source:', error);
+      toast.error('Failed to remove RSS source');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
