@@ -575,6 +575,7 @@ export class RSSService {
    */
   public static async convertToArticles(): Promise<Article[]> {
     try {
+      console.log('Fetching RSS articles from database...');
       const { data, error } = await supabase
         .from('rss_articles')
         .select('*')
@@ -582,13 +583,15 @@ export class RSSService {
 
       if (error) {
         console.error('Error fetching RSS articles:', error);
-        return [];
+        throw error; // Throw the error to be caught by the caller
       }
 
       if (!data || data.length === 0) {
+        console.log('No RSS articles found in database');
         return [];
       }
 
+      console.log(`Found ${data.length} RSS articles in database`);
       return data.map(item => ({
         id: item.id,
         title: item.title,

@@ -114,11 +114,13 @@ const AdminRSSSourcesTab: React.FC = () => {
   const handleFetchAllSources = async () => {
     setIsFetching(true);
     try {
+      console.log('Starting to fetch articles from all RSS sources...');
       await rssService.fetchAllSources();
+      console.log('Successfully fetched articles from all RSS sources');
       toast.success('Successfully fetched articles from all RSS sources');
     } catch (error) {
       console.error('Error fetching RSS sources:', error);
-      toast.error('Failed to fetch articles from RSS sources');
+      toast.error('Failed to fetch articles from RSS sources. Check console for details.');
     } finally {
       setIsFetching(false);
     }

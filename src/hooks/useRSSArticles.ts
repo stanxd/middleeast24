@@ -13,21 +13,27 @@ export const useRSSArticles = (sentimentFilter: string = 'all') => {
         setLoading(true);
         setError(null);
         
+        console.log('Fetching RSS articles with sentiment filter:', sentimentFilter);
+        
         // Fetch RSS articles from the database
         const rssArticles = await RSSService.convertToArticles();
         
         // Apply sentiment filtering if needed
         let filteredArticles = rssArticles;
         if (sentimentFilter !== 'all' && sentimentFilter) {
+          console.log(`Filtering articles by sentiment: ${sentimentFilter}`);
           filteredArticles = rssArticles.filter(article => 
             article.sentiment === sentimentFilter
           );
+          console.log(`Found ${filteredArticles.length} articles with sentiment: ${sentimentFilter}`);
         }
         
         setArticles(filteredArticles);
-      } catch (err) {
+        console.log(`Total articles after filtering: ${filteredArticles.length}`);
+      } catch (err: any) {
         console.error('Error fetching RSS articles:', err);
-        setError('Failed to load RSS articles');
+        // Provide more detailed error message
+        setError(err?.message || 'Failed to load RSS articles');
       } finally {
         setLoading(false);
       }
