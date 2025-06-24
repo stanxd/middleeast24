@@ -4,7 +4,7 @@ import { Twitter } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-gradient-to-br from-black via-[#0003ff] to-black text-white">
+<footer className="bg-black text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-4 gap-8">
           {/* Logo and Description */}
@@ -12,7 +12,7 @@ const Footer = () => {
             <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
               <img src="/lovable-uploads/d7c6804d-088a-4968-a327-f9e698a51495.png" alt="MiddleEast24 Logo" className="h-10 w-10" />
               <div>
-                <p className="text-[#e0c000] text-base font-bold">Middle East 24</p>
+                <p className="text-[#FFFFFF] text-base font-bold">Middle East 24</p>
               </div>
             </Link>
             <p className="text-gray-400 text-sm">
