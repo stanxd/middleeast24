@@ -112,4 +112,26 @@
   .hero-gradient {
     background: linear-gradient(135deg, hsl(var(--hero-bg-start)) 0%, hsl(var(--hero-bg-middle)) 50%, hsl(var(--hero-bg-end)) 100%);
   }
+  
+  /* News ticker animation */
+  @keyframes ticker {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  
+  .animate-ticker {
+    display: inline-block;
+    white-space: nowrap;
+    padding-right: 100%;
+    animation: ticker 20s linear infinite;
+  }
+  
+  /* Pause animation on hover */
+  .animate-ticker:hover {
+    animation-play-state: paused;
+  }
 }
