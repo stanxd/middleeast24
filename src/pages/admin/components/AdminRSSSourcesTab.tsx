@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Trash2, Plus, RefreshCw } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
+import { Trash2, Plus, RefreshCw, Clock, Database } from 'lucide-react';
 import { RSSSource, rssService } from '@/services/RSSService';
+import { useRSSArticles } from '@/hooks/useRSSArticles';
 import { toast } from 'sonner';
 
 const AdminRSSSourcesTab: React.FC = () => {
@@ -17,6 +20,13 @@ const AdminRSSSourcesTab: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+  const [autoRefresh, setAutoRefresh] = useState(false);
+  const [lastFetchTime, setLastFetchTime] = useState<Date | null>(null);
+  const [refreshInterval, setRefreshInterval] = useState(15); // minutes
+  const autoRefreshIntervalRef = useRef<number | null>(null);
+  
+  // Use the RSS articles hook to get and refresh articles
+  const { articles, refresh: refreshArticles, lastRefreshed } = useRSSArticles();
 
   // Load sources on component mount
   useEffect(() => {
@@ -32,6 +42,35 @@ const AdminRSSSourcesTab: React.FC = () => {
     
     loadSources();
   }, []);
+
+  // Set up auto-refresh interval
+  useEffect(() => {
+    // Clear any existing interval
+    if (autoRefreshIntervalRef.current) {
+      window.clearInterval(autoRefreshIntervalRef.current);
+      autoRefreshIntervalRef.current = null;
+    }
+
+    // Set up new interval if auto-refresh is enabled
+    if (autoRefresh) {
+      toast.info(`Auto-refresh enabled. Fetching RSS sources every ${refreshInterval} minutes.`);
+      
+      // Convert minutes to milliseconds
+      const intervalMs = refreshInterval * 60 * 1000;
+      
+      autoRefreshIntervalRef.current = window.setInterval(() => {
+        console.log(`Auto-refresh: Fetching RSS sources (${new Date().toLocaleTimeString()})`);
+        handleFetchAllSources();
+      }, intervalMs);
+    }
+
+    // Clean up interval on component unmount
+    return () => {
+      if (autoRefreshIntervalRef.current) {
+        window.clearInterval(autoRefreshIntervalRef.current);
+      }
+    };
+  }, [autoRefresh, refreshInterval]);
 
   const handleAddSource = async () => {
     // Validate inputs
@@ -117,13 +156,29 @@ const AdminRSSSourcesTab: React.FC = () => {
       console.log('Starting to fetch articles from all RSS sources...');
       await rssService.fetchAllSources();
       console.log('Successfully fetched articles from all RSS sources');
+      
+      // Refresh the articles display
+      await refreshArticles();
+      
       toast.success('Successfully fetched articles from all RSS sources');
+      
+      // Update last fetch time
+      setLastFetchTime(new Date());
     } catch (error) {
       console.error('Error fetching RSS sources:', error);
       toast.error('Failed to fetch articles from RSS sources. Check console for details.');
     } finally {
       setIsFetching(false);
     }
+  };
+
+  const handleAutoRefreshToggle = (checked: boolean) => {
+    setAutoRefresh(checked);
+  };
+
+  const handleRefreshIntervalChange = (value: string) => {
+    const interval = parseInt(value, 10);
+    setRefreshInterval(interval);
   };
 
   return (
@@ -134,24 +189,69 @@ const AdminRSSSourcesTab: React.FC = () => {
           <p className="text-muted-foreground">
             Manage RSS sources for automatic article fetching and sentiment analysis.
           </p>
+          <div className="flex items-center gap-2 mt-1">
+            {lastFetchTime && (
+              <p className="text-xs text-muted-foreground flex items-center">
+                <Clock className="h-3 w-3 mr-1" />
+                Last fetched: {lastFetchTime.toLocaleString()}
+              </p>
+            )}
+            <Badge variant="outline" className="flex items-center gap-1 text-xs">
+              <Database className="h-3 w-3" />
+              {articles.length} articles
+            </Badge>
+          </div>
         </div>
-        <Button 
-          onClick={handleFetchAllSources} 
-          disabled={isFetching}
-          className="bg-blue-600 hover:bg-blue-700"
-        >
-          {isFetching ? (
-            <>
-              <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-              Fetching...
-            </>
-          ) : (
-            <>
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Fetch All Sources
-            </>
-          )}
-        </Button>
+        <div className="flex items-center gap-4">
+          <div className="flex flex-col items-end">
+            <div className="flex items-center space-x-2 mb-1">
+              <Label htmlFor="auto-refresh" className="text-sm">Auto-refresh</Label>
+              <Switch
+                id="auto-refresh"
+                checked={autoRefresh}
+                onCheckedChange={handleAutoRefreshToggle}
+              />
+            </div>
+            {autoRefresh && (
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="refresh-interval" className="text-xs">Every</Label>
+                <Select
+                  value={refreshInterval.toString()}
+                  onValueChange={handleRefreshIntervalChange}
+                >
+                  <SelectTrigger id="refresh-interval" className="h-7 w-20">
+                    <SelectValue placeholder="15" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="5">5</SelectItem>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="15">15</SelectItem>
+                    <SelectItem value="30">30</SelectItem>
+                    <SelectItem value="60">60</SelectItem>
+                  </SelectContent>
+                </Select>
+                <span className="text-xs">minutes</span>
+              </div>
+            )}
+          </div>
+          <Button 
+            onClick={handleFetchAllSources} 
+            disabled={isFetching}
+            className="bg-blue-600 hover:bg-blue-700"
+          >
+            {isFetching ? (
+              <>
+                <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                Fetching...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Fetch All Sources
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       <Card>

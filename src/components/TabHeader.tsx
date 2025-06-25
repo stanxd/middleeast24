@@ -2,6 +2,8 @@
 import React from 'react';
 import SentimentFilter from './SentimentFilter';
 import AIStatusIndicator from './AIStatusIndicator';
+import { Button } from '@/components/ui/button';
+import { RefreshCw } from 'lucide-react';
 
 interface TabHeaderProps {
   title: string;
@@ -12,6 +14,8 @@ interface TabHeaderProps {
   showAIStatus?: boolean;
   isAnalyzing?: boolean;
   isModelReady?: boolean;
+  onRefresh?: () => Promise<void>;
+  lastRefreshed?: Date | null;
 }
 
 const TabHeader: React.FC<TabHeaderProps> = ({
@@ -22,7 +26,9 @@ const TabHeader: React.FC<TabHeaderProps> = ({
   onSentimentChange,
   showAIStatus = false,
   isAnalyzing = false,
-  isModelReady = false
+  isModelReady = false,
+  onRefresh,
+  lastRefreshed
 }) => {
   const getColorClasses = () => {
     switch (color) {
@@ -39,11 +45,32 @@ const TabHeader: React.FC<TabHeaderProps> = ({
 
   return (
     <div className="mb-6 sm:mb-8">
-      <div className="flex items-center space-x-3 mb-3">
-        <div className={`w-1 h-8 bg-gradient-to-b ${getColorClasses()} rounded-full`}></div>
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">{title}</h2>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center space-x-3">
+          <div className={`w-1 h-8 bg-gradient-to-b ${getColorClasses()} rounded-full`}></div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">{title}</h2>
+        </div>
+        {onRefresh && (
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={onRefresh}
+            className="flex items-center gap-1"
+            disabled={isAnalyzing}
+          >
+            <RefreshCw className="h-3.5 w-3.5" />
+            <span>Refresh</span>
+          </Button>
+        )}
       </div>
-      <p className="text-sm sm:text-base text-gray-600 pl-7 mb-6">{description}</p>
+      <div className="flex items-center justify-between">
+        <p className="text-sm sm:text-base text-gray-600 pl-7 mb-6">{description}</p>
+        {lastRefreshed && (
+          <p className="text-xs text-gray-500 mb-6">
+            Last updated: {lastRefreshed.toLocaleTimeString()}
+          </p>
+        )}
+      </div>
       
       <div className="pl-7 space-y-3">
         {showAIStatus && (

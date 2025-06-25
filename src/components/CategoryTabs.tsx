@@ -14,7 +14,13 @@ import { useLocation } from 'react-router-dom';
 const CategoryTabs = () => {
   const location = useLocation();
   const [sentimentFilter, setSentimentFilter] = useState('all');
-  const { articles: rssArticles, loading: rssLoading, error: rssError } = useRSSArticles(sentimentFilter);
+  const { 
+    articles: rssArticles, 
+    loading: rssLoading, 
+    error: rssError, 
+    refresh: refreshRSSArticles,
+    lastRefreshed
+  } = useRSSArticles(sentimentFilter);
   const { isModelReady } = useSentimentAnalysis();
   const [processedArticles, setProcessedArticles] = useState<Article[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -131,6 +137,8 @@ const CategoryTabs = () => {
             showAIStatus={true}
             isAnalyzing={isAnalyzing}
             isModelReady={isModelReady}
+            onRefresh={refreshRSSArticles}
+            lastRefreshed={lastRefreshed}
           />
           <ArticleGrid
             articles={newsArticles}
