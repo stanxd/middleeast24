@@ -43,15 +43,18 @@ const BreakingNewsBar = () => {
     <div className="bg-red-600 text-white border-b overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center py-2">
-          <div className="flex-shrink-0 mr-4 font-bold">BREAKING NEWS:</div>
+          <div className="flex-shrink-0 mr-2 sm:mr-4 font-bold text-xs sm:text-sm md:text-base">
+            <span className="hidden sm:inline">BREAKING NEWS:</span>
+            <span className="inline sm:hidden">📢</span>
+          </div>
           
           <div className="ticker-container overflow-hidden flex-grow">
             {loading ? (
-              <div className="text-sm">Loading latest news...</div>
+              <div className="text-sm">Loading...</div>
             ) : recentArticles.length > 0 ? (
               <div 
                 ref={tickerRef} 
-                className="ticker-content whitespace-nowrap animate-ticker"
+                className="ticker-content whitespace-nowrap animate-ticker text-sm sm:text-base"
               >
                 {recentArticles.map((article, index) => (
                   <span key={article.id} className="inline-flex items-center">

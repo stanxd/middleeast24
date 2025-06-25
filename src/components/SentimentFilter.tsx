@@ -19,19 +19,19 @@ const SentimentFilter: React.FC<SentimentFilterProps> = ({
   ];
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-1 sm:gap-2">
       {filters.map((filter) => (
         <Button
           key={filter.value}
           variant="outline"
           size="sm"
-          className={`${filter.color} border rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+          className={`${filter.color} border rounded-full px-2 sm:px-3 py-1 text-xs font-medium transition-colors ${
             currentFilter === filter.value ? 'ring-2 ring-offset-1 ring-blue-400' : ''
           }`}
           onClick={() => onChange(filter.value)}
         >
-          <span className="mr-1">{filter.icon}</span>
-          {filter.label}
+          <span className={filter.value === 'all' ? '' : 'mr-0 sm:mr-1'}>{filter.icon}</span>
+          <span className="hidden sm:inline">{filter.label}</span>
         </Button>
       ))}
     </div>
